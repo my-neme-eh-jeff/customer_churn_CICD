@@ -88,6 +88,22 @@ gke-connect:
 
 GCP_PROJECT := project-8018ed81-1dfe-470e-aad
 SQL_INSTANCE := churn-mlflow
+GKE_CLUSTER := mlops-cluster
+GKE_REGION := asia-south1
+EXPECTED_CONTEXT := gke_$(GCP_PROJECT)_$(GKE_REGION)_$(GKE_CLUSTER)
+
+# Guard against operating on the wrong cluster. Failure mode hit live on
+# 2026-05-18: kubectl context silently drifted to an Atlan vcluster via
+# another tool's auth refresh, and `make cluster-wake` scaled deployments
+# in a namespace that didn't exist there. Better to fail fast.
+verify-context:
+	@actual=$$(kubectl config current-context 2>/dev/null); \
+	if [ "$$actual" != "$(EXPECTED_CONTEXT)" ]; then \
+		echo "✗ kubectl context is '$$actual', expected '$(EXPECTED_CONTEXT)'."; \
+		echo "  Fix: gcloud container clusters get-credentials $(GKE_CLUSTER) --region=$(GKE_REGION) --project=$(GCP_PROJECT)"; \
+		exit 1; \
+	fi
+.PHONY: verify-context
 
 # Components permanently disabled on this cluster (Autopilot incompatibility or unused features):
 #   kubeflow/cache-deployer-deployment      — fails GKE Warden (CSR with system: prefix)
@@ -110,7 +126,7 @@ KFP_DEPLOYS    := mysql minio ml-pipeline ml-pipeline-ui ml-pipeline-persistence
 # Disables ArgoCD auto-sync first so it can't revert the scale-down.
 # Remaining: 4 LB forwarding rules (under 5/project free tier = $0), GCS, Artifact Registry,
 # CloudSQL storage (~few GB), 2 regional 5Gi PVCs (KFP). Idle burn ≈ $0/day.
-cluster-sleep:
+cluster-sleep: verify-context
 	@echo "Disabling ArgoCD auto-sync (so scale-down isn't reverted on next wake)..."
 	@kubectl patch applications.argoproj.io inference-api -n argocd --type=json \
 		-p '[{"op":"remove","path":"/spec/syncPolicy/automated"}]' 2>/dev/null || true
@@ -133,7 +149,7 @@ cluster-sleep:
 
 # Scale workloads back up + start CloudSQL after cluster-sleep.
 # Only scales the components we actually use — see the disabled list above.
-cluster-wake:
+cluster-wake: verify-context
 	@set -e; \
 	echo "Starting CloudSQL instance $(SQL_INSTANCE)..."; \
 	gcloud sql instances patch $(SQL_INSTANCE) --activation-policy=ALWAYS --project=$(GCP_PROJECT) --quiet 2>&1 | tail -2; \
@@ -234,7 +250,7 @@ autoresearch-submit:
 #   make autoresearch-run AUTORESEARCH_N=10 AUTORESEARCH_HOURS=4.0
 AUTORESEARCH_N ?= 1
 AUTORESEARCH_HOURS ?= 2.0
-autoresearch-run:
+autoresearch-run: verify-context
 	@ts=$$(date +%Y%m%d-%H%M%S); \
 	sed -e "s/name: autoresearch-smoke/name: autoresearch-real-$$ts/" \
 	    -e "s|# args: \[.*\]|args: [\"--n-experiments\", \"$(AUTORESEARCH_N)\", \"--hours\", \"$(AUTORESEARCH_HOURS)\"]|" \
@@ -256,7 +272,7 @@ autoresearch-run:
 #      @champion (safety net if gc somehow didn't clean — never hardcode "1")
 #   5. Restart inference-api pods so they load the new @champion
 # Prerequisite: `make mlflow-kill && make mlflow` port-forward in another terminal.
-reset-for-fresh-run:
+reset-for-fresh-run: verify-context
 	@echo "── 1/5: emptying history.tsv ──"
 	@printf "timestamp\texp_num\texperiment_name\tchange_type\tauc_before\tauc_after\tdelta\toutcome\tinput_tokens\toutput_tokens\tcost_usd\trationale\n" > auto_experiment/history.tsv
 	@echo "── 2/5: soft-delete classifier + runs, then mlflow gc to hard-purge ──"
