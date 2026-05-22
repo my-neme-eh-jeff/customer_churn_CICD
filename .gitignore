@@ -29,7 +29,6 @@ configs/tenant.yaml
 
 # Local narrative / brainstorm / TODO notes — kept on disk, never committed
 BRAINSTORM.md
-NOTES.md
 e2e.md
 
 # Claude Code local settings
@@ -47,3 +46,6 @@ e2e.md
 lessons.md
 mlflow.db
 mlflow_artifacts/
+
+# Local-only notes (do not commit)
+NOTES.md
