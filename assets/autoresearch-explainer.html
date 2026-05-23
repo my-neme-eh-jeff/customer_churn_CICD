@@ -32,11 +32,13 @@
   }
   .stage-0 .top-title { opacity: 0.4; }
 
-  .container { flex: 1; display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; padding: 80px 6vw; gap: 4vw; }
+  .container { flex: 1; display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; padding: 60px 5vw 80px; gap: 4vw; }
 
-  /* --- left: loop visual --- */
-  .loop-wrap { position: relative; aspect-ratio: 1 / 1; max-height: 70vh; margin: 0 auto; width: 100%; max-width: 600px; }
-  svg.loop { width: 100%; height: 100%; overflow: visible; }
+  /* --- left column: loop + auc card stacked --- */
+  .left-col { display: flex; flex-direction: column; align-items: center; gap: 32px; width: 100%; }
+  .loop-wrap { position: relative; aspect-ratio: 1 / 1; width: 100%; max-width: 560px; }
+  svg.loop { width: 100%; height: 100%; overflow: visible; display: block; }
+
   .loop-circle, .loop-arc { fill: none; stroke: #27272a; stroke-width: 2; }
   .loop-arc {
     stroke: var(--accent); stroke-width: 2.5;
@@ -48,56 +50,86 @@
   .stage-on-4 .loop-arc, .stage-on-5 .loop-arc, .stage-on-6 .loop-arc,
   .stage-on-7 .loop-arc { stroke-dashoffset: 0; }
 
-  .node {
-    opacity: 0;
-    transition: opacity 0.6s ease 0.3s;
-  }
+  /* directional arrows on the arc */
+  .arrow { opacity: 0; transition: opacity 0.5s ease 0.7s; }
+  .stage-on-1 .arrow, .stage-on-2 .arrow, .stage-on-3 .arrow,
+  .stage-on-4 .arrow, .stage-on-5 .arrow, .stage-on-6 .arrow,
+  .stage-on-7 .arrow { opacity: 1; }
+
+  /* nodes — solid fills so the arc behind them is hidden (line "breaks" at boxes) */
+  .node { opacity: 0; transition: opacity 0.6s ease 0.3s; }
   .stage-on-1 .node, .stage-on-2 .node, .stage-on-3 .node,
   .stage-on-4 .node, .stage-on-5 .node, .stage-on-6 .node,
   .stage-on-7 .node { opacity: 1; }
 
-  .node rect { rx: 14; ry: 14; stroke-width: 2; }
+  .node rect { rx: 14; ry: 14; stroke-width: 2.5; }
   .node text { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 16px; fill: var(--fg); text-anchor: middle; dominant-baseline: middle; }
-  .node-agent rect { fill: rgba(56, 189, 248, 0.12); stroke: var(--node-agent); }
-  .node-exp   rect { fill: rgba(251, 146, 60, 0.12); stroke: var(--node-exp); }
-  .node-obs   rect { fill: rgba(74, 222, 128, 0.12); stroke: var(--node-obs); }
+  /* tinted dark fills — page bg with a hint of the accent so each node still reads */
+  .node-agent rect { fill: #0d1620; stroke: var(--node-agent); }
+  .node-exp   rect { fill: #1a1208; stroke: var(--node-exp); }
+  .node-obs   rect { fill: #0a1810; stroke: var(--node-obs); }
 
+  /* dot disappears behind nodes (it's painted BEFORE nodes in SVG order) */
   .dot {
-    r: 10; fill: var(--accent-2);
-    filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.7));
+    r: 11; fill: var(--accent-2);
+    filter: drop-shadow(0 0 14px rgba(251, 191, 36, 0.85));
     opacity: 0;
     transition: opacity 0.4s ease;
   }
   .stage-on-2 .dot, .stage-on-3 .dot, .stage-on-4 .dot,
   .stage-on-5 .dot, .stage-on-6 .dot, .stage-on-7 .dot { opacity: 1; }
 
-  /* AUC counter under the loop */
+  /* AUC card — now a sibling under the loop, NOT absolutely positioned */
   .auc-card {
-    position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
-    background: var(--bg-soft); border: 1px solid #27272a; border-radius: 12px;
-    padding: 14px 24px; min-width: 260px; text-align: center;
+    background: var(--bg-soft); border: 1px solid #27272a; border-radius: 14px;
+    padding: 18px 32px; min-width: 320px; text-align: center;
     opacity: 0; transition: opacity 0.5s ease;
   }
   .stage-on-2 .auc-card, .stage-on-3 .auc-card, .stage-on-4 .auc-card,
   .stage-on-5 .auc-card, .stage-on-6 .auc-card, .stage-on-7 .auc-card { opacity: 1; }
-  .auc-label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
-  .auc-value { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 28px; color: var(--good); }
-  .auc-iter { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .auc-label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .auc-value {
+    font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 34px; color: var(--good);
+    transition: color 0.4s ease, text-shadow 0.4s ease;
+    line-height: 1.1;
+  }
+  .auc-value.flash { animation: flash 0.6s ease; }
+  @keyframes flash {
+    0%   { transform: scale(1.0); text-shadow: 0 0 0 rgba(132, 204, 22, 0); }
+    50%  { transform: scale(1.18); text-shadow: 0 0 24px rgba(132, 204, 22, 0.9); }
+    100% { transform: scale(1.0); text-shadow: 0 0 0 rgba(132, 204, 22, 0); }
+  }
+  .auc-iter { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); margin-top: 6px; }
 
   /* --- right: text reveals --- */
-  .right { display: flex; flex-direction: column; gap: 22px; max-width: 520px; }
+  .right { display: flex; flex-direction: column; gap: 20px; max-width: 540px; }
   .right h1 {
-    font-size: 38px; line-height: 1.15; font-weight: 700; margin: 0;
+    font-size: 40px; line-height: 1.1; font-weight: 700; margin: 0;
     opacity: 0; transform: translateY(6px); transition: opacity 0.6s ease, transform 0.6s ease;
   }
-  .right .lede {
-    font-size: 17px; line-height: 1.55; color: #d4d4d8; margin: 0;
-    opacity: 0; transform: translateY(6px); transition: opacity 0.6s ease 0.1s, transform 0.6s ease 0.1s;
-  }
-  .stage-on-3 .right h1, .stage-on-4 .right h1, .stage-on-5 .right h1, .stage-on-6 .right h1, .stage-on-7 .right h1,
-  .stage-on-3 .right .lede, .stage-on-4 .right .lede, .stage-on-5 .right .lede, .stage-on-6 .right .lede, .stage-on-7 .right .lede {
+  .stage-on-3 .right h1, .stage-on-4 .right h1, .stage-on-5 .right h1, .stage-on-6 .right h1, .stage-on-7 .right h1 {
     opacity: 1; transform: translateY(0);
   }
+
+  /* problem statement card — appears alongside the heading */
+  .problem-card {
+    background: var(--bg-soft); border: 1px solid #27272a; border-radius: 10px;
+    padding: 14px 18px; display: flex; flex-direction: column; gap: 6px;
+    font-size: 14px; line-height: 1.5;
+    opacity: 0; transform: translateY(6px);
+    transition: opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s;
+  }
+  .problem-card .label {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600;
+  }
+  .problem-card .line { color: #e4e4e7; }
+  .problem-card code {
+    font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent);
+    background: rgba(34, 211, 238, 0.08); padding: 1px 6px; border-radius: 4px;
+  }
+  .stage-on-3 .problem-card, .stage-on-4 .problem-card, .stage-on-5 .problem-card,
+  .stage-on-6 .problem-card, .stage-on-7 .problem-card { opacity: 1; transform: translateY(0); }
 
   .stop-list { list-style: none; padding: 0; margin: 6px 0 0 0; display: flex; flex-direction: column; gap: 12px; }
   .stop-list li {
@@ -115,6 +147,14 @@
   .stage-on-4 .stop-1, .stage-on-5 .stop-1, .stage-on-6 .stop-1, .stage-on-7 .stop-1 { opacity: 1; transform: translateX(0); }
   .stage-on-5 .stop-2, .stage-on-6 .stop-2, .stage-on-7 .stop-2 { opacity: 1; transform: translateX(0); }
   .stage-on-6 .stop-3, .stage-on-7 .stop-3 { opacity: 1; transform: translateX(0); }
+
+  /* reset state flash — triggered by pressing R */
+  .auc-value.reset-flash { animation: resetFlash 0.7s ease; }
+  @keyframes resetFlash {
+    0%   { color: var(--good); }
+    35%  { color: var(--pink); text-shadow: 0 0 20px rgba(244, 114, 182, 0.9); transform: scale(1.15); }
+    100% { color: var(--good); }
+  }
 
   /* footer hint */
   .hint {
@@ -135,46 +175,52 @@
   <div class="top-title">Autoresearch</div>
 
   <div class="container">
-    <!-- Left: loop visual -->
-    <div class="loop-wrap">
-      <svg class="loop" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
-            <path d="M0,0 L10,5 L0,10 Z" fill="#52525b" />
-          </marker>
-          <!-- Path the dot travels along: a circle through the 3 nodes -->
-          <path id="loop-path" d="M 300 80 A 220 220 0 0 1 490 410 A 220 220 0 0 1 110 410 A 220 220 0 0 1 300 80 Z" fill="none" />
-        </defs>
+    <!-- LEFT: loop visual + AUC card stacked -->
+    <div class="left-col">
+      <div class="loop-wrap">
+        <svg class="loop" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+          <!-- background ring -->
+          <circle class="loop-circle" cx="300" cy="300" r="220" />
 
-        <!-- background ring -->
-        <circle class="loop-circle" cx="300" cy="300" r="220" />
+          <!-- animated arc (draws in on stage 1) -->
+          <circle class="loop-arc" cx="300" cy="300" r="220" />
 
-        <!-- animated arc (draws in on stage 1) -->
-        <circle class="loop-arc" cx="300" cy="300" r="220" />
+          <!-- 3 directional arrows showing clockwise flow (Agent → Exp → Obs → Agent) -->
+          <!-- positioned at the midpoint of each arc, rotated to point along the tangent -->
+          <g class="arrow" transform="translate(490 190) rotate(60)">
+            <polygon points="-8,-10 8,0 -8,10" fill="#22d3ee" />
+          </g>
+          <g class="arrow" transform="translate(300 520) rotate(180)">
+            <polygon points="-8,-10 8,0 -8,10" fill="#22d3ee" />
+          </g>
+          <g class="arrow" transform="translate(110 190) rotate(300)">
+            <polygon points="-8,-10 8,0 -8,10" fill="#22d3ee" />
+          </g>
 
-        <!-- 3 nodes -->
-        <g class="node node-agent" transform="translate(300 80)">
-          <rect x="-92" y="-32" width="184" height="64" />
-          <text y="-4">🤖 LLM Agent</text>
-          <text y="18" style="font-size:13px;fill:#a1a1aa;font-weight:500">proposes change</text>
-        </g>
-        <g class="node node-exp" transform="translate(490 410)">
-          <rect x="-92" y="-32" width="184" height="64" />
-          <text y="-4">⚙ Experiment</text>
-          <text y="18" style="font-size:13px;fill:#a1a1aa;font-weight:500">train + evaluate</text>
-        </g>
-        <g class="node node-obs" transform="translate(110 410)">
-          <rect x="-92" y="-32" width="184" height="64" />
-          <text y="-4">📊 Observe</text>
-          <text y="18" style="font-size:13px;fill:#a1a1aa;font-weight:500">update memory</text>
-        </g>
+          <!-- the traveling dot (painted BEFORE nodes so it disappears behind them) -->
+          <circle class="dot" cx="0" cy="0">
+            <animateMotion id="dotMotion" dur="3.5s" repeatCount="indefinite" begin="indefinite"
+                           path="M 300 80 A 220 220 0 0 1 490 410 A 220 220 0 0 1 110 410 A 220 220 0 0 1 300 80 Z" />
+          </circle>
 
-        <!-- the traveling dot -->
-        <circle class="dot" cx="0" cy="0">
-          <animateMotion id="dotMotion" dur="6s" repeatCount="indefinite" begin="indefinite"
-                         path="M 300 80 A 220 220 0 0 1 490 410 A 220 220 0 0 1 110 410 A 220 220 0 0 1 300 80 Z" />
-        </circle>
-      </svg>
+          <!-- 3 nodes — painted LAST so they're on top of the arc and the dot -->
+          <g class="node node-agent" transform="translate(300 80)">
+            <rect x="-92" y="-32" width="184" height="64" />
+            <text y="-4">🤖 LLM Agent</text>
+            <text y="18" style="font-size:13px;fill:#a1a1aa;font-weight:500">proposes change</text>
+          </g>
+          <g class="node node-exp" transform="translate(490 410)">
+            <rect x="-92" y="-32" width="184" height="64" />
+            <text y="-4">⚙ Experiment</text>
+            <text y="18" style="font-size:13px;fill:#a1a1aa;font-weight:500">train + evaluate</text>
+          </g>
+          <g class="node node-obs" transform="translate(110 410)">
+            <rect x="-92" y="-32" width="184" height="64" />
+            <text y="-4">📊 Observe</text>
+            <text y="18" style="font-size:13px;fill:#a1a1aa;font-weight:500">update memory</text>
+          </g>
+        </svg>
+      </div>
 
       <div class="auc-card">
         <div class="auc-label">Current Metric (AUC-ROC)</div>
@@ -183,10 +229,15 @@
       </div>
     </div>
 
-    <!-- Right: text reveals -->
+    <!-- RIGHT: text reveals -->
     <div class="right">
-      <h1>An LLM iterates against a quantitative metric — until something tells it to stop.</h1>
-      <p class="lede">Give it a problem, a metric to maximize, and let it run. Each iteration proposes a change, runs the experiment, observes the outcome, updates its memory, and tries again.</p>
+      <h1>Iterate until told to stop.</h1>
+
+      <div class="problem-card">
+        <div class="label">Problem statement</div>
+        <div class="line"><code>configs/params.yaml</code> + <code>auto_experiment/program.md</code></div>
+        <div class="line">Maximize <code>AUC-ROC</code> on IEEE-CIS Fraud</div>
+      </div>
 
       <ul class="stop-list">
         <li class="stop-1">
@@ -215,6 +266,7 @@
 <script>
 (() => {
   const trajectory = [0.749, 0.812, 0.871, 0.911, 0.934, 0.944];
+  const TICK_MS = 3500; // matches the dot's animateMotion dur="3.5s"
   const body = document.body;
   const aucVal = document.getElementById('aucVal');
   const iterVal = document.getElementById('iterVal');
@@ -226,22 +278,19 @@
   const MAX_STAGE = 7;
 
   function setStage(s) {
-    // remove previous stage classes
     body.className = '';
     if (s === 0) { body.classList.add('stage-0'); }
     else { body.classList.add('stage-on-' + s); }
     stage = s;
 
     if (s >= 2 && !dotTimer) {
-      // start the dot motion
+      // start the dot motion AND start ticking the AUC at the same cadence
       dotMotion.beginElement();
-      // tick the AUC each loop completion (every 6s)
       iter = 0;
-      bumpAUC(); // show 0.749 → 0.812 immediately on first reveal
-      dotTimer = setInterval(bumpAUC, 6000);
+      bumpAUC(); // immediate first tick → shows 0.812
+      dotTimer = setInterval(bumpAUC, TICK_MS);
     }
     if (s === 7) {
-      // stop bumping, mark stagnation
       if (dotTimer) { clearInterval(dotTimer); dotTimer = null; }
       iterVal.textContent = 'iteration ' + iter + ' · stagnation detected';
     }
@@ -251,13 +300,22 @@
     if (iter < trajectory.length - 1) { iter++; }
     aucVal.textContent = trajectory[iter].toFixed(3);
     iterVal.textContent = 'iteration ' + iter + (iter === trajectory.length - 1 ? ' · stalled' : ' · improving');
+    // flash animation
+    aucVal.classList.remove('flash');
+    // force reflow so animation restarts
+    void aucVal.offsetWidth;
+    aucVal.classList.add('flash');
   }
 
   function reset() {
     if (dotTimer) { clearInterval(dotTimer); dotTimer = null; }
     iter = 0;
     aucVal.textContent = trajectory[0].toFixed(3);
-    iterVal.textContent = 'iteration 0 · baseline';
+    iterVal.textContent = 'iteration 0 · baseline · reset';
+    // visible reset flash — pink pulse so the viewer sees the slam-back
+    aucVal.classList.remove('flash', 'reset-flash');
+    void aucVal.offsetWidth;
+    aucVal.classList.add('reset-flash');
     setStage(0);
   }
 
