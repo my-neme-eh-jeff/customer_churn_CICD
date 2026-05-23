@@ -102,9 +102,9 @@
   .miss-card .pc-name { font-size: 16px; font-weight: 700; color: #f4f4f5; }
   .miss-card .pc-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
 
-  /* Karpathy video reference — YouTube iframe embed below the 3 problem cards */
+  /* Karpathy tweet reference — Twitter/X embed below the 3 problem cards */
   .video-ref {
-    margin-top: 20px; display: flex; flex-direction: column; align-items: center; gap: 10px;
+    margin-top: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px;
     width: 100%;
     opacity: 0; transform: translateY(8px);
     transition: opacity 0.5s ease, transform 0.5s ease;
@@ -113,15 +113,12 @@
   .video-ref .caption {
     font-size: 15px; color: var(--muted); font-weight: 400; font-style: italic;
   }
-  .video-wrapper {
-    width: 100%; max-width: 760px;
-    aspect-ratio: 16 / 9;
-    border-radius: 10px;
-    overflow: hidden;
-    border: 1px solid #27272a;
-    background: #000;
+  .tweet-wrapper {
+    width: 100%; max-width: 560px;
+    display: flex; justify-content: center;
+    min-height: 200px;     /* reserve space while widgets.js renders */
   }
-  .video-wrapper iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .tweet-wrapper .twitter-tweet { margin: 0 !important; }
 
   /* === SLIDE 3 — the harness (stages 6-8) === */
   .slide-2 { /* keep selector for now (HTML stays as is) — inherits .slide-overlay */ }
@@ -552,17 +549,14 @@
       </div>
     </div>
 
-    <!-- Karpathy video — REPLACE the video ID below with the actual autoresearch video ID
-         (e.g. https://www.youtube.com/watch?v=YOUR_ID → embed/YOUR_ID).
-         Currently set to 'Let's build GPT' as a placeholder until you paste the right URL. -->
+    <!-- Karpathy tweet embed — REPLACE the href URL below with the actual Karpathy
+         autoresearch tweet URL (https://twitter.com/karpathy/status/<ID>).
+         Twitter's widgets.js renders the blockquote into a styled tweet card. -->
     <div class="video-ref">
-      <div class="video-wrapper">
-        <iframe
-          src="https://www.youtube.com/embed/kCc8FmEb1nY"
-          title="Karpathy — original autoresearch demo"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen></iframe>
+      <div class="tweet-wrapper">
+        <blockquote class="twitter-tweet" data-theme="dark" data-conversation="none" data-dnt="true">
+          <a href="https://twitter.com/karpathy/status/1859305141385691575">Karpathy on autoresearch</a>
+        </blockquote>
       </div>
       <div class="caption">Karpathy's original — for context</div>
     </div>
@@ -824,5 +818,7 @@
   });
 })();
 </script>
+<!-- Twitter/X widgets script — renders the <blockquote class="twitter-tweet"> on slide 2 -->
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </body>
 </html>
