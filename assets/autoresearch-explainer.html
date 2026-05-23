@@ -17,9 +17,8 @@
     --accent-2: #fbbf24;
     --good: #84cc16;
     --bad: #f87171;
-    --node-agent: #38bdf8;     /* sky-blue 400 */
-    --node-exp: #3b82f6;       /* blue-500 — true blue, not purple */
-    --node-obs: #22d3ee;       /* cyan-400 */
+    --node-stroke: #0e7490;    /* cyan-700 — same hue as the loop, just dimmer */
+    --node-fill: #061a22;      /* faint cyan-tinted dark */
     --pink: #f472b6;
   }
   * { box-sizing: border-box; }
@@ -244,9 +243,9 @@
   .stage-on-1 .node, .stage-on-2 .node, .stage-on-3 .node, .stage-on-4 .node { opacity: 1; }
   .node rect { rx: 14; ry: 14; stroke-width: 2.5; }
   .node text { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 15px; fill: var(--fg); text-anchor: middle; dominant-baseline: middle; }
-  .node-agent rect { fill: #0d1620; stroke: var(--node-agent); }
-  .node-exp   rect { fill: #0c1424; stroke: var(--node-exp); }   /* blue-tinted bg */
-  .node-obs   rect { fill: #051a1f; stroke: var(--node-obs); }   /* cyan-tinted bg */
+  .node-agent rect,
+  .node-exp   rect,
+  .node-obs   rect { fill: var(--node-fill); stroke: var(--node-stroke); }
 
   /* dot — painted before nodes so it disappears behind them */
   .dot {
@@ -456,7 +455,7 @@
         <div class="auc-row-top">
           <div class="auc-label">Metric</div>
           <div class="auc-value-wrap">
-            <span class="auc-value" id="aucVal">0.749</span>
+            <span class="auc-value" id="aucVal">75%</span>
             <span class="badge baseline show" id="badge">baseline</span>
           </div>
         </div>
@@ -665,18 +664,26 @@
 
 <script>
 (() => {
-  // 4 stages: 0=title, 1=loop, 2=dot+AUC+problem-card, 3=heading+conditions, 4=stagnation
+  // 10 iterations — whole numbers + % so the metric reads as universal
+  // (could be conversion, latency-rank, accuracy, anything you can phrase
+  // as a metric). Decimals like 0.812 read as ML/AUC; that's premature
+  // for slide 1 where we haven't introduced the actual problem yet.
   const SEQUENCE = [
-    { type: 'success', value: 0.812 },
-    { type: 'success', value: 0.871 },
-    { type: 'success', value: 0.901 },
-    { type: 'fail',    value: 0.820 },   // single rejection — narrative centerpiece
-    { type: 'success', value: 0.928 },
-    { type: 'success', value: 0.944 },
+    { type: 'success', value: 81 },
+    { type: 'success', value: 87 },
+    { type: 'success', value: 89 },
+    { type: 'fail',    value: 78 },     // single rejection — narrative centerpiece
+    { type: 'success', value: 92 },
+    { type: 'success', value: 94 },
+    { type: 'success', value: 95 },
+    { type: 'fail',    value: 91 },
+    { type: 'success', value: 96 },
+    { type: 'fail',    value: 95 },     // last attempt — triggers stagnation
   ];
-  const BASELINE = 0.749;
+  const BASELINE = 75;
   const TICK_MS = 3500;
   const FAIL_REVERT_MS = 1500;
+  const fmt = (v) => v + '%';            // single source of truth for display
 
   const body = document.body;
   const aucVal = document.getElementById('aucVal');
@@ -709,7 +716,7 @@
       if (dotTimer) { clearInterval(dotTimer); dotTimer = null; }
       if (pendingRevert) { clearTimeout(pendingRevert); pendingRevert = null; }
       // Fast-forward through the remaining sequence so the slide shows the
-      // FINAL champion state, not whatever iter happened to be on screen
+      // FINAL state (best metric so far), not whatever iter was on screen
       // when the user advanced. Avoids 'stagnation at iter 1' if the user
       // moves through stages quickly.
       while (stepIdx < SEQUENCE.length) {
@@ -719,9 +726,9 @@
       }
       aucVal.className = 'auc-value';
       void aucVal.offsetWidth;
-      aucVal.textContent = champion.toFixed(3);
+      aucVal.textContent = fmt(champion);
       iterVal.textContent = 'iteration ' + stepIdx + ' · stagnation detected';
-      setBadge('improved', 'champion');
+      setBadge('improved', 'best');
       dot.classList.remove('fail');
     }
   }
@@ -733,7 +740,12 @@
 
   function tick() {
     if (pendingRevert) { clearTimeout(pendingRevert); pendingRevert = null; }
-    if (stepIdx >= SEQUENCE.length) return;
+    // Auto-advance into stagnation visual once the full sequence has played,
+    // unless the user has already moved to a later stage.
+    if (stepIdx >= SEQUENCE.length) {
+      if (stage < 4) setStage(4);
+      return;
+    }
     const step = SEQUENCE[stepIdx];
     const iterNum = stepIdx + 1;
     stepIdx++;
@@ -742,26 +754,26 @@
       champion = step.value;
       aucVal.className = 'auc-value';
       void aucVal.offsetWidth;
-      aucVal.textContent = step.value.toFixed(3);
+      aucVal.textContent = fmt(step.value);
       aucVal.classList.add('success-flash');
-      iterVal.textContent = 'iteration ' + iterNum + ' · ✓ champion → ' + step.value.toFixed(3);
+      iterVal.textContent = 'iteration ' + iterNum + ' · improved';
       setBadge('improved', 'improved');
       dot.classList.remove('fail');
     } else {
       aucVal.className = 'auc-value';
       void aucVal.offsetWidth;
-      aucVal.textContent = step.value.toFixed(3);
+      aucVal.textContent = fmt(step.value);
       aucVal.classList.add('fail-attempt');
-      iterVal.textContent = 'iteration ' + iterNum + ' · ✗ rejected (' + step.value.toFixed(3) + ' < ' + champion.toFixed(3) + ')';
+      iterVal.textContent = 'iteration ' + iterNum + ' · rejected (' + fmt(step.value) + ' < ' + fmt(champion) + ')';
       setBadge('rejected', 'rejected');
       dot.classList.add('fail');
       pendingRevert = setTimeout(() => {
         aucVal.className = 'auc-value';
         void aucVal.offsetWidth;
-        aucVal.textContent = champion.toFixed(3);
+        aucVal.textContent = fmt(champion);
         aucVal.classList.add('fail-revert');
-        iterVal.textContent = 'iteration ' + iterNum + ' · champion held at ' + champion.toFixed(3);
-        setBadge('improved', 'champion');
+        iterVal.textContent = 'iteration ' + iterNum + ' · held at ' + fmt(champion);
+        setBadge('improved', 'best');
         dot.classList.remove('fail');
         pendingRevert = null;
       }, FAIL_REVERT_MS);
@@ -775,7 +787,7 @@
     champion = BASELINE;
     aucVal.className = 'auc-value';
     void aucVal.offsetWidth;
-    aucVal.textContent = BASELINE.toFixed(3);
+    aucVal.textContent = fmt(BASELINE);
     aucVal.classList.add('reset-flash');
     iterVal.textContent = 'iteration 0 · baseline · reset';
     setBadge('baseline', 'baseline');
