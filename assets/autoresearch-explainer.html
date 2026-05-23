@@ -31,8 +31,8 @@
     opacity: 1; transition: opacity 0.6s ease;
   }
   .stage-0 .top-title { opacity: 0.4; }
-  /* hide the top title on slides 2 and 3 — only slide 1 needs the chrome */
-  .stage-on-5 .top-title, .stage-on-6 .top-title, .stage-on-7 .top-title, .stage-on-8 .top-title {
+  /* hide the top title on slides 2A, 2B, 3 — only slide 1 needs the chrome */
+  .stage-on-5 .top-title, .stage-on-6 .top-title, .stage-on-7 .top-title, .stage-on-8 .top-title, .stage-on-9 .top-title {
     opacity: 0;
   }
 
@@ -46,7 +46,7 @@
     transition: opacity 0.6s ease;
   }
   /* slide 1 fades out at stage 5+ */
-  .stage-on-5 .container, .stage-on-6 .container, .stage-on-7 .container, .stage-on-8 .container {
+  .stage-on-5 .container, .stage-on-6 .container, .stage-on-7 .container, .stage-on-8 .container, .stage-on-9 .container {
     opacity: 0;
     pointer-events: none;
   }
@@ -70,10 +70,17 @@
     transition: opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s;
   }
 
-  /* === SLIDE 2 — the problem (stage 5 only) === */
+  /* === SLIDE 2A — Karpathy intro (stage 5 only) — shows the announcement tweet === */
+  .slide-2-intro { /* inherits .slide-overlay */ }
+  .stage-on-5 .slide-2-intro { opacity: 1; pointer-events: auto; }
+  .stage-on-5 .slide-2-intro .s2-header, .stage-on-5 .slide-2-intro .s2-tag {
+    opacity: 1; transform: translateY(0);
+  }
+
+  /* === SLIDE 2B — the problem (stage 6 only) — shows the outage tweet === */
   .slide-2-problem { /* inherits .slide-overlay */ }
-  .stage-on-5 .slide-2-problem { opacity: 1; pointer-events: auto; }
-  .stage-on-5 .slide-2-problem .s2-header, .stage-on-5 .slide-2-problem .s2-tag {
+  .stage-on-6 .slide-2-problem { opacity: 1; pointer-events: auto; }
+  .stage-on-6 .slide-2-problem .s2-header, .stage-on-6 .slide-2-problem .s2-tag {
     opacity: 1; transform: translateY(0);
   }
 
@@ -88,9 +95,9 @@
     opacity: 0; transform: translateY(8px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
-  .stage-on-5 .miss-card:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.15s; }
-  .stage-on-5 .miss-card:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.30s; }
-  .stage-on-5 .miss-card:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.45s; }
+  .stage-on-6 .miss-card:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.15s; }
+  .stage-on-6 .miss-card:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.30s; }
+  .stage-on-6 .miss-card:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.45s; }
 
   .miss-card .pc-icon {
     color: var(--bad); display: flex; align-items: center; justify-content: center;
@@ -109,24 +116,27 @@
     opacity: 0; transform: translateY(8px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
-  .stage-on-5 .video-ref { opacity: 1; transform: translateY(0); transition-delay: 0.6s; }
+  .stage-on-5 .video-ref, .stage-on-6 .video-ref { opacity: 1; transform: translateY(0); transition-delay: 0.6s; }
   .video-ref .caption {
     font-size: 15px; color: var(--muted); font-weight: 400; font-style: italic;
   }
+  /* fixed-size tweet wrapper — prevents layout shift between announcement
+     (taller, with image) and outage (shorter, text-only) tweets */
   .tweet-wrapper {
     width: 100%; max-width: 560px;
-    display: flex; justify-content: center;
-    min-height: 200px;     /* reserve space while widgets.js renders */
+    height: 480px;
+    overflow: hidden;
+    display: flex; justify-content: center; align-items: flex-start;
   }
-  .tweet-wrapper .twitter-tweet { margin: 0 !important; }
+  .tweet-wrapper .twitter-tweet { margin: 0 !important; max-width: 100% !important; }
 
-  /* === SLIDE 3 — the harness (stages 6-8) === */
+  /* === SLIDE 3 — the harness (stages 7-9) === */
   .slide-2 { /* keep selector for now (HTML stays as is) — inherits .slide-overlay */ }
-  .stage-on-6 .slide-2, .stage-on-7 .slide-2, .stage-on-8 .slide-2 {
+  .stage-on-7 .slide-2, .stage-on-8 .slide-2, .stage-on-9 .slide-2 {
     opacity: 1; pointer-events: auto;
   }
-  .stage-on-6 .slide-2 .s2-header, .stage-on-7 .slide-2 .s2-header, .stage-on-8 .slide-2 .s2-header,
-  .stage-on-6 .slide-2 .s2-tag,    .stage-on-7 .slide-2 .s2-tag,    .stage-on-8 .slide-2 .s2-tag {
+  .stage-on-7 .slide-2 .s2-header, .stage-on-8 .slide-2 .s2-header, .stage-on-9 .slide-2 .s2-header,
+  .stage-on-7 .slide-2 .s2-tag,    .stage-on-8 .slide-2 .s2-tag,    .stage-on-9 .slide-2 .s2-tag {
     opacity: 1; transform: translateY(0);
   }
 
@@ -138,7 +148,7 @@
     opacity: 0; transform: translateY(8px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
-  .stage-on-7 .actors-line, .stage-on-8 .actors-line { opacity: 1; transform: translateY(0); }
+  .stage-on-8 .actors-line, .stage-on-9 .actors-line { opacity: 1; transform: translateY(0); }
   .actors-label {
     font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
     color: var(--muted); font-weight: 700; margin-right: 6px;
@@ -159,11 +169,11 @@
     opacity: 0; transform: translateY(8px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
-  .stage-on-6 .tool-card, .stage-on-7 .tool-card, .stage-on-8 .tool-card { opacity: 1; transform: translateY(0); }
-  .stage-on-6 .tool-card:nth-child(1), .stage-on-7 .tool-card:nth-child(1), .stage-on-8 .tool-card:nth-child(1) { transition-delay: 0.05s; }
-  .stage-on-6 .tool-card:nth-child(2), .stage-on-7 .tool-card:nth-child(2), .stage-on-8 .tool-card:nth-child(2) { transition-delay: 0.15s; }
-  .stage-on-6 .tool-card:nth-child(3), .stage-on-7 .tool-card:nth-child(3), .stage-on-8 .tool-card:nth-child(3) { transition-delay: 0.25s; }
-  .stage-on-6 .tool-card:nth-child(4), .stage-on-7 .tool-card:nth-child(4), .stage-on-8 .tool-card:nth-child(4) { transition-delay: 0.35s; }
+  .stage-on-7 .tool-card, .stage-on-8 .tool-card, .stage-on-9 .tool-card { opacity: 1; transform: translateY(0); }
+  .stage-on-7 .tool-card:nth-child(1), .stage-on-8 .tool-card:nth-child(1), .stage-on-9 .tool-card:nth-child(1) { transition-delay: 0.05s; }
+  .stage-on-7 .tool-card:nth-child(2), .stage-on-8 .tool-card:nth-child(2), .stage-on-9 .tool-card:nth-child(2) { transition-delay: 0.15s; }
+  .stage-on-7 .tool-card:nth-child(3), .stage-on-8 .tool-card:nth-child(3), .stage-on-9 .tool-card:nth-child(3) { transition-delay: 0.25s; }
+  .stage-on-7 .tool-card:nth-child(4), .stage-on-8 .tool-card:nth-child(4), .stage-on-9 .tool-card:nth-child(4) { transition-delay: 0.35s; }
 
   .tool-card .tool-icon { color: var(--accent); display: flex; align-items: center; }
   .tool-card .tool-icon svg { width: 22px; height: 22px; display: block; }
@@ -181,7 +191,7 @@
     opacity: 0; transform: translateY(8px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
-  .stage-on-8 .extended-loop { opacity: 1; transform: translateY(0); }
+  .stage-on-9 .extended-loop { opacity: 1; transform: translateY(0); }
   .extended-loop .ext-label {
     font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
     color: var(--muted); font-weight: 700; margin-bottom: 16px;
@@ -510,10 +520,24 @@
     </div>
   </div>
 
-  <!-- === SLIDE 2 — the problem (stage 5) === -->
+  <!-- === SLIDE 2A — Karpathy intro (stage 5) — announcement tweet === -->
+  <div class="slide-2-intro slide-overlay">
+    <h2 class="s2-header">Karpathy's autoresearch.</h2>
+    <p class="s2-tag">A research loop, packaged up by Karpathy. The starting point.</p>
+
+    <div class="video-ref">
+      <div class="tweet-wrapper">
+        <blockquote class="twitter-tweet" data-theme="dark" data-conversation="none" data-dnt="true">
+          <a href="https://twitter.com/karpathy/status/2030371219518931079">Karpathy on autoresearch (Mar 7, 2026)</a>
+        </blockquote>
+      </div>
+    </div>
+  </div>
+
+  <!-- === SLIDE 2B — the problem (stage 6) — outage tweet === -->
   <div class="slide-2-problem slide-overlay">
     <h2 class="s2-header">The problem.</h2>
-    <p class="s2-tag">A few things were missing from a production ready scenario.</p>
+    <p class="s2-tag">A few things were missing from a production-ready scenario.</p>
 
     <div class="problems-grid">
       <div class="miss-card">
@@ -549,16 +573,15 @@
       </div>
     </div>
 
-    <!-- Karpathy tweet embed — REPLACE the href URL below with the actual Karpathy
-         autoresearch tweet URL (https://twitter.com/karpathy/status/<ID>).
-         Twitter's widgets.js renders the blockquote into a styled tweet card. -->
+    <!-- Karpathy outage tweet — shows the problems aren't hypothetical;
+         Karpathy himself lost his autoresearch labs to an oauth outage. -->
     <div class="video-ref">
       <div class="tweet-wrapper">
         <blockquote class="twitter-tweet" data-theme="dark" data-conversation="none" data-dnt="true">
-          <a href="https://twitter.com/karpathy/status/1859305141385691575">Karpathy on autoresearch</a>
+          <a href="https://twitter.com/karpathy/status/2031792523187040643">Karpathy on the oauth outage (Mar 11, 2026)</a>
         </blockquote>
       </div>
-      <div class="caption">Karpathy's original — for context</div>
+      <div class="caption">Even Karpathy's own setup wasn't immune.</div>
     </div>
   </div>
 
@@ -695,7 +718,7 @@
   let champion = BASELINE;
   let dotTimer = null;
   let pendingRevert = null;
-  const MAX_STAGE = 8;   // 0-4 = loop slide, 5-8 = harness slide
+  const MAX_STAGE = 9;   // 0-4 loop · 5 karpathy intro · 6 problem · 7-9 harness
 
   function setStage(s) {
     body.className = '';
