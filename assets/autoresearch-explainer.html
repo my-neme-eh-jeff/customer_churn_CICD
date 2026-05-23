@@ -51,18 +51,18 @@
   /* shared slide chrome */
   .slide-overlay {
     position: absolute; inset: 0;
-    display: flex; flex-direction: column; align-items: center;
-    padding: 130px 4vw 60px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 80px 4vw;
     opacity: 0; pointer-events: none;
     transition: opacity 0.7s ease 0.2s;
   }
   .slide-overlay .s2-header {
-    font-size: 32px; font-weight: 700; margin: 0 0 6px 0;
+    font-size: 36px; font-weight: 700; margin: 0 0 8px 0;
     opacity: 0; transform: translateY(-6px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
   .slide-overlay .s2-tag {
-    font-size: 15px; color: var(--muted); margin: 0 0 28px 0; max-width: 700px; text-align: center;
+    font-size: 16px; color: var(--muted); margin: 0 0 36px 0; max-width: 720px; text-align: center;
     opacity: 0; transform: translateY(-6px);
     transition: opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s;
   }
@@ -79,8 +79,9 @@
     width: 100%; max-width: 1000px;
   }
   .problem-card {
-    background: var(--bg-soft); border: 1px solid #27272a; border-radius: 10px;
-    padding: 18px 20px; display: flex; flex-direction: column; gap: 8px;
+    background: var(--bg-soft); border: 1px solid #27272a; border-radius: 12px;
+    padding: 28px 26px; display: flex; flex-direction: column; gap: 12px;
+    min-height: 220px;
     opacity: 0; transform: translateY(8px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
@@ -88,10 +89,15 @@
   .stage-on-5 .problem-card:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.30s; }
   .stage-on-5 .problem-card:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.45s; }
 
-  .problem-card .pc-icon { color: var(--bad); display: flex; }
-  .problem-card .pc-icon svg { width: 22px; height: 22px; }
-  .problem-card .pc-name { font-size: 16px; font-weight: 700; color: #f4f4f5; }
-  .problem-card .pc-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .problem-card .pc-icon {
+    color: var(--bad); display: flex; align-items: center; justify-content: center;
+    width: 48px; height: 48px; border-radius: 10px;
+    background: rgba(248, 113, 113, 0.08); border: 1px solid rgba(248, 113, 113, 0.2);
+    margin-bottom: 4px;
+  }
+  .problem-card .pc-icon svg { width: 26px; height: 26px; }
+  .problem-card .pc-name { font-size: 18px; font-weight: 700; color: #f4f4f5; }
+  .problem-card .pc-desc { font-size: 14px; color: var(--muted); line-height: 1.55; }
 
   /* === SLIDE 3 — the harness (stages 6-8) === */
   .slide-2 { /* keep selector for now (HTML stays as is) — inherits .slide-overlay */ }
@@ -469,7 +475,7 @@
   <!-- === SLIDE 2 — the problem (stage 5) === -->
   <div class="slide-2-problem slide-overlay">
     <h2 class="s2-header">The problem.</h2>
-    <p class="s2-tag">Karpathy showed it on a Mac mini farm. Three things were missing.</p>
+    <p class="s2-tag">A few things were missing from a production ready scenario.</p>
 
     <div class="problems-grid">
       <div class="problem-card">
