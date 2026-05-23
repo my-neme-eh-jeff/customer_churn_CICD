@@ -17,9 +17,9 @@
     --accent-2: #fbbf24;
     --good: #84cc16;
     --bad: #f87171;
-    --node-agent: #38bdf8;
-    --node-exp: #fb923c;
-    --node-obs: #4ade80;
+    --node-agent: #38bdf8;     /* sky-blue 400 */
+    --node-exp: #3b82f6;       /* blue-500 — true blue, not purple */
+    --node-obs: #22d3ee;       /* cyan-400 */
     --pink: #f472b6;
   }
   * { box-sizing: border-box; }
@@ -245,8 +245,8 @@
   .node rect { rx: 14; ry: 14; stroke-width: 2.5; }
   .node text { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 15px; fill: var(--fg); text-anchor: middle; dominant-baseline: middle; }
   .node-agent rect { fill: #0d1620; stroke: var(--node-agent); }
-  .node-exp   rect { fill: #1a1208; stroke: var(--node-exp); }
-  .node-obs   rect { fill: #0a1810; stroke: var(--node-obs); }
+  .node-exp   rect { fill: #0c1424; stroke: var(--node-exp); }   /* blue-tinted bg */
+  .node-obs   rect { fill: #051a1f; stroke: var(--node-obs); }   /* cyan-tinted bg */
 
   /* dot — painted before nodes so it disappears behind them */
   .dot {
@@ -548,7 +548,7 @@
             <line x1="2" y1="2" x2="22" y2="22"/>
           </svg>
         </div>
-        <div class="pc-name">No production</div>
+        <div class="pc-name">Stays local</div>
         <div class="pc-desc">Local scripts can't reach live users.</div>
       </div>
     </div>
@@ -557,7 +557,6 @@
          (e.g. https://www.youtube.com/watch?v=YOUR_ID → embed/YOUR_ID).
          Currently set to 'Let's build GPT' as a placeholder until you paste the right URL. -->
     <div class="video-ref">
-      <div class="caption">Karpathy's original — for context</div>
       <div class="video-wrapper">
         <iframe
           src="https://www.youtube.com/embed/kCc8FmEb1nY"
@@ -566,6 +565,7 @@
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen></iframe>
       </div>
+      <div class="caption">Karpathy's original — for context</div>
     </div>
   </div>
 
@@ -707,7 +707,22 @@
     }
     if (s === 4) {
       if (dotTimer) { clearInterval(dotTimer); dotTimer = null; }
+      if (pendingRevert) { clearTimeout(pendingRevert); pendingRevert = null; }
+      // Fast-forward through the remaining sequence so the slide shows the
+      // FINAL champion state, not whatever iter happened to be on screen
+      // when the user advanced. Avoids 'stagnation at iter 1' if the user
+      // moves through stages quickly.
+      while (stepIdx < SEQUENCE.length) {
+        const step = SEQUENCE[stepIdx];
+        if (step.type === 'success') champion = step.value;
+        stepIdx++;
+      }
+      aucVal.className = 'auc-value';
+      void aucVal.offsetWidth;
+      aucVal.textContent = champion.toFixed(3);
       iterVal.textContent = 'iteration ' + stepIdx + ' · stagnation detected';
+      setBadge('improved', 'champion');
+      dot.classList.remove('fail');
     }
   }
 
