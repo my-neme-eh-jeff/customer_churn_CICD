@@ -166,53 +166,71 @@
     100% { color: var(--good); transform: scale(1); }
   }
 
-  /* --- RIGHT column — vertically centered, problem-card first then heading+stops --- */
+  /* --- RIGHT column — heading + tag + problem card (stage 2), stops (stage 3) --- */
   .right {
-    display: flex; flex-direction: column; gap: 20px; max-width: 540px;
-    align-self: center;                 /* explicit vertical center within grid row */
+    display: flex; flex-direction: column; gap: 18px; max-width: 540px;
+    align-self: center;
   }
-  .right h1 {
-    font-size: 38px; line-height: 1.1; font-weight: 700; margin: 0;
+  .right .title {
+    font-size: 38px; line-height: 1.05; font-weight: 700; margin: 0;
     opacity: 0; transform: translateY(6px); transition: opacity 0.6s ease, transform 0.6s ease;
   }
-  .stage-on-3 .right h1, .stage-on-4 .right h1 { opacity: 1; transform: translateY(0); }
+  .right .tag {
+    font-size: 16px; line-height: 1.4; font-weight: 400; margin: -8px 0 0 0;
+    color: #a1a1aa;
+    opacity: 0; transform: translateY(6px); transition: opacity 0.6s ease 0.1s, transform 0.6s ease 0.1s;
+  }
+  .stage-on-2 .right .title, .stage-on-3 .right .title, .stage-on-4 .right .title,
+  .stage-on-2 .right .tag,   .stage-on-3 .right .tag,   .stage-on-4 .right .tag {
+    opacity: 1; transform: translateY(0);
+  }
 
-  /* problem statement card — appears FIRST (stage 2) */
+  /* shared section label for both cards */
+  .section-label {
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700; margin-bottom: 6px;
+  }
+
+  /* problem statement card — appears at stage 2 with the heading */
   .problem-card {
     background: var(--bg-soft); border: 1px solid #27272a; border-radius: 10px;
-    padding: 14px 18px; display: flex; flex-direction: column; gap: 6px;
-    font-size: 13px; line-height: 1.5;
+    padding: 14px 18px; display: flex; flex-direction: column; gap: 4px;
+    font-size: 14px; line-height: 1.5;
     opacity: 0; transform: translateY(6px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-  }
-  .problem-card .label {
-    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
-    color: var(--muted); font-weight: 600;
+    transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s;
   }
   .problem-card .line { color: #e4e4e7; }
+  .problem-card .line.muted { color: var(--muted); font-size: 12px; margin-top: 2px; }
   .problem-card code {
-    font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent);
-    background: rgba(34, 211, 238, 0.08); padding: 1px 6px; border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent);
+    background: rgba(34, 211, 238, 0.08); padding: 1px 5px; border-radius: 4px;
   }
   .stage-on-2 .problem-card, .stage-on-3 .problem-card, .stage-on-4 .problem-card { opacity: 1; transform: translateY(0); }
 
-  /* stop list — reveals together with the heading at stage 3, staggered via transition-delay */
-  .stop-list { list-style: none; padding: 0; margin: 4px 0 0 0; display: flex; flex-direction: column; gap: 10px; }
+  /* stops wrap — label + list, reveals at stage 3 */
+  .stops-wrap {
+    display: flex; flex-direction: column;
+    opacity: 0; transform: translateY(6px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .stage-on-3 .stops-wrap, .stage-on-4 .stops-wrap { opacity: 1; transform: translateY(0); }
+
+  .stop-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
   .stop-list li {
     display: flex; align-items: center; gap: 12px;
     background: var(--bg-soft); border: 1px solid #27272a; border-radius: 9px;
-    padding: 11px 16px; font-size: 14px; color: #e4e4e7;
+    padding: 10px 14px; font-size: 14px; color: #e4e4e7;
     opacity: 0; transform: translateX(-10px); transition: opacity 0.5s ease, transform 0.5s ease;
   }
   .stop-list .icon {
-    width: 24px; height: 24px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;
-    background: rgba(244, 114, 182, 0.15); color: var(--pink); font-size: 14px;
+    width: 22px; height: 22px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;
+    background: rgba(34, 211, 238, 0.12); color: var(--accent); font-size: 13px;
   }
   .stop-list .meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); margin-left: auto; }
 
-  .stage-on-3 .stop-1, .stage-on-4 .stop-1 { opacity: 1; transform: translateX(0); transition-delay: 0.15s; }
-  .stage-on-3 .stop-2, .stage-on-4 .stop-2 { opacity: 1; transform: translateX(0); transition-delay: 0.30s; }
-  .stage-on-3 .stop-3, .stage-on-4 .stop-3 { opacity: 1; transform: translateX(0); transition-delay: 0.45s; }
+  .stage-on-3 .stop-1, .stage-on-4 .stop-1 { opacity: 1; transform: translateX(0); transition-delay: 0.20s; }
+  .stage-on-3 .stop-2, .stage-on-4 .stop-2 { opacity: 1; transform: translateX(0); transition-delay: 0.35s; }
+  .stage-on-3 .stop-3, .stage-on-4 .stop-3 { opacity: 1; transform: translateX(0); transition-delay: 0.50s; }
 
   /* footer */
   .hint {
@@ -283,33 +301,37 @@
       </div>
     </div>
 
-    <!-- RIGHT: problem statement FIRST (stage 2), then heading + 3 conditions (stage 3) -->
+    <!-- RIGHT: heading + tag + problem card (stage 2), then stops (stage 3) -->
     <div class="right">
+      <h1 class="title">A self-improving loop.</h1>
+      <p class="tag">An LLM iterates against a metric.</p>
+
       <div class="problem-card">
-        <div class="label">Problem statement</div>
-        <div class="line"><code>configs/params.yaml</code> + <code>auto_experiment/program.md</code></div>
-        <div class="line">Maximize <code>AUC-ROC</code> on IEEE-CIS Fraud</div>
+        <div class="section-label">Problem statement</div>
+        <div class="line">Improve a fraud-detection model.</div>
+        <div class="line muted">defined in <code>params.yaml</code> + <code>program.md</code></div>
       </div>
 
-      <h1>Iterate until told to stop.</h1>
-
-      <ul class="stop-list">
-        <li class="stop-1">
-          <span class="icon">⏱</span>
-          <span>Time budget exhausted</span>
-          <span class="meta">--hours 8</span>
-        </li>
-        <li class="stop-2">
-          <span class="icon">🎯</span>
-          <span>Target metric reached</span>
-          <span class="meta">AUC ≥ 0.95</span>
-        </li>
-        <li class="stop-3">
-          <span class="icon">📉</span>
-          <span>No improvement for N iterations</span>
-          <span class="meta">stagnation</span>
-        </li>
-      </ul>
+      <div class="stops-wrap">
+        <div class="section-label">Stops when…</div>
+        <ul class="stop-list">
+          <li class="stop-1">
+            <span class="icon">⏱</span>
+            <span>Time budget exhausted</span>
+            <span class="meta">--hours 8</span>
+          </li>
+          <li class="stop-2">
+            <span class="icon">🎯</span>
+            <span>Target metric reached</span>
+            <span class="meta">AUC ≥ 0.95</span>
+          </li>
+          <li class="stop-3">
+            <span class="icon">📉</span>
+            <span>No improvement for N iterations</span>
+            <span class="meta">stagnation</span>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 
