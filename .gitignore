@@ -49,3 +49,6 @@ mlflow_artifacts/
 
 # Local-only notes (do not commit)
 NOTES.md
+
+# Demo trajectory plot — regenerated per run via `make plot-trajectory`
+auto_experiment/trajectory.png

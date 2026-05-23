@@ -309,6 +309,9 @@ autoresearch-logs:
 	if [ -z "$$latest" ]; then echo "No autoresearch pod found yet."; exit 1; fi; \
 	echo "Tailing $$latest..."; kubectl logs -n inference $$latest -f
 
+plot-trajectory:
+	uv run python scripts/plot_trajectory.py
+
 # ── Kubernetes (vind cluster) ──────────────────────────────────────
 
 deploy-mlflow:
