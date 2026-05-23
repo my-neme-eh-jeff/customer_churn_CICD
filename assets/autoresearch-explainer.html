@@ -16,6 +16,7 @@
     --accent: #22d3ee;
     --accent-2: #fbbf24;
     --good: #84cc16;
+    --bad: #f87171;
     --node-agent: #38bdf8;
     --node-exp: #fb923c;
     --node-obs: #4ade80;
@@ -25,18 +26,33 @@
   html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--fg); font-family: 'Inter', system-ui, sans-serif; }
   body { display: flex; flex-direction: column; }
   .top-title {
-    position: absolute; top: 32px; left: 0; right: 0; text-align: center;
+    position: absolute; top: 24px; left: 0; right: 0; text-align: center;
     font-family: 'JetBrains Mono', monospace; font-weight: 700;
-    letter-spacing: 0.4em; font-size: 13px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.4em; font-size: 11px; color: var(--muted); text-transform: uppercase;
     opacity: 1; transition: opacity 0.6s ease;
   }
   .stage-0 .top-title { opacity: 0.4; }
 
-  .container { flex: 1; display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; padding: 60px 5vw 80px; gap: 4vw; }
+  .container {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;            /* top-aligned columns */
+    justify-items: start;
+    padding: 50px 4vw 60px;
+    gap: 3vw;
+  }
 
-  /* --- left column: loop + auc card stacked --- */
-  .left-col { display: flex; flex-direction: column; align-items: center; gap: 32px; width: 100%; }
-  .loop-wrap { position: relative; aspect-ratio: 1 / 1; width: 100%; max-width: 560px; }
+  /* --- left column: loop + auc card stacked, hugs top-left --- */
+  .left-col {
+    display: flex; flex-direction: column; align-items: flex-start;
+    gap: 18px; width: 100%;
+  }
+  .loop-wrap {
+    position: relative; aspect-ratio: 1 / 1;
+    width: 100%; max-width: 520px;
+    margin-left: -1vw;            /* nudge slightly leftward */
+  }
   svg.loop { width: 100%; height: 100%; overflow: visible; display: block; }
 
   .loop-circle, .loop-arc { fill: none; stroke: #27272a; stroke-width: 2; }
@@ -50,72 +66,114 @@
   .stage-on-4 .loop-arc, .stage-on-5 .loop-arc, .stage-on-6 .loop-arc,
   .stage-on-7 .loop-arc { stroke-dashoffset: 0; }
 
-  /* directional arrows on the arc */
+  /* directional arrows */
   .arrow { opacity: 0; transition: opacity 0.5s ease 0.7s; }
   .stage-on-1 .arrow, .stage-on-2 .arrow, .stage-on-3 .arrow,
   .stage-on-4 .arrow, .stage-on-5 .arrow, .stage-on-6 .arrow,
   .stage-on-7 .arrow { opacity: 1; }
 
-  /* nodes — solid fills so the arc behind them is hidden (line "breaks" at boxes) */
+  /* nodes */
   .node { opacity: 0; transition: opacity 0.6s ease 0.3s; }
   .stage-on-1 .node, .stage-on-2 .node, .stage-on-3 .node,
   .stage-on-4 .node, .stage-on-5 .node, .stage-on-6 .node,
   .stage-on-7 .node { opacity: 1; }
-
   .node rect { rx: 14; ry: 14; stroke-width: 2.5; }
-  .node text { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 16px; fill: var(--fg); text-anchor: middle; dominant-baseline: middle; }
-  /* tinted dark fills — page bg with a hint of the accent so each node still reads */
+  .node text { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 15px; fill: var(--fg); text-anchor: middle; dominant-baseline: middle; }
   .node-agent rect { fill: #0d1620; stroke: var(--node-agent); }
   .node-exp   rect { fill: #1a1208; stroke: var(--node-exp); }
   .node-obs   rect { fill: #0a1810; stroke: var(--node-obs); }
 
-  /* dot disappears behind nodes (it's painted BEFORE nodes in SVG order) */
+  /* the dot — painted before nodes so it disappears behind them */
   .dot {
-    r: 11; fill: var(--accent-2);
-    filter: drop-shadow(0 0 14px rgba(251, 191, 36, 0.85));
+    r: 10; fill: var(--accent-2);
+    filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.85));
     opacity: 0;
-    transition: opacity 0.4s ease;
+    transition: opacity 0.4s ease, fill 0.3s ease;
   }
   .stage-on-2 .dot, .stage-on-3 .dot, .stage-on-4 .dot,
   .stage-on-5 .dot, .stage-on-6 .dot, .stage-on-7 .dot { opacity: 1; }
+  .dot.fail { fill: var(--bad); filter: drop-shadow(0 0 14px rgba(248, 113, 113, 0.9)); }
 
-  /* AUC card — now a sibling under the loop, NOT absolutely positioned */
+  /* --- AUC card — compact, sits below loop --- */
   .auc-card {
-    background: var(--bg-soft); border: 1px solid #27272a; border-radius: 14px;
-    padding: 18px 32px; min-width: 320px; text-align: center;
+    background: var(--bg-soft); border: 1px solid #27272a; border-radius: 10px;
+    padding: 10px 18px; min-width: 240px; text-align: left;
     opacity: 0; transition: opacity 0.5s ease;
+    display: flex; align-items: center; gap: 16px;
   }
   .stage-on-2 .auc-card, .stage-on-3 .auc-card, .stage-on-4 .auc-card,
   .stage-on-5 .auc-card, .stage-on-6 .auc-card, .stage-on-7 .auc-card { opacity: 1; }
-  .auc-label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .auc-label-block { display: flex; flex-direction: column; gap: 2px; }
+  .auc-label { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  .auc-iter { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
+  .auc-value-wrap { position: relative; min-width: 96px; text-align: right; }
   .auc-value {
-    font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 34px; color: var(--good);
-    transition: color 0.4s ease, text-shadow 0.4s ease;
-    line-height: 1.1;
+    font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 24px;
+    color: var(--good); display: inline-block; line-height: 1.1;
+    transition: color 0.3s ease;
   }
-  .auc-value.flash { animation: flash 0.6s ease; }
-  @keyframes flash {
-    0%   { transform: scale(1.0); text-shadow: 0 0 0 rgba(132, 204, 22, 0); }
-    50%  { transform: scale(1.18); text-shadow: 0 0 24px rgba(132, 204, 22, 0.9); }
-    100% { transform: scale(1.0); text-shadow: 0 0 0 rgba(132, 204, 22, 0); }
+  .auc-value.success-flash { animation: slideInGreen 0.7s cubic-bezier(.2,.7,.3,1); }
+  .auc-value.fail-attempt {
+    color: var(--bad);
+    text-decoration: line-through;
+    text-decoration-thickness: 3px;
+    text-decoration-color: var(--bad);
+    animation: shakeAlarm 1.2s ease;
   }
-  .auc-iter { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .auc-value.fail-revert { color: var(--good); animation: bounceBack 0.55s ease; }
+  /* stagnation freeze at stage 7 — gold glow */
+  .stage-on-7 .auc-value:not(.fail-attempt):not(.fail-revert) { color: var(--accent-2); text-shadow: 0 0 14px rgba(251, 191, 36, 0.55); }
 
-  /* --- right: text reveals --- */
-  .right { display: flex; flex-direction: column; gap: 20px; max-width: 540px; }
+  @keyframes slideInGreen {
+    0%   { transform: translateY(16px); opacity: 0; text-shadow: 0 0 0 transparent; }
+    55%  { transform: translateY(-3px); opacity: 1; text-shadow: 0 0 18px rgba(132, 204, 22, 0.75); }
+    100% { transform: translateY(0);    opacity: 1; text-shadow: 0 0 0 transparent; }
+  }
+  @keyframes shakeAlarm {
+    0%   { transform: translateX(0);   text-shadow: 0 0 0 transparent; }
+    10%  { transform: translateX(-6px); text-shadow: 0 0 22px rgba(248, 113, 113, 0.95); }
+    20%  { transform: translateX( 6px); }
+    30%  { transform: translateX(-6px); text-shadow: 0 0 8px  rgba(248, 113, 113, 0.4); }
+    40%  { transform: translateX( 6px); text-shadow: 0 0 22px rgba(248, 113, 113, 0.95); }
+    50%  { transform: translateX(-4px); }
+    60%  { transform: translateX( 4px); text-shadow: 0 0 22px rgba(248, 113, 113, 0.95); }
+    70%  { transform: translateX(-2px); }
+    80%  { transform: translateX( 2px); text-shadow: 0 0 8px rgba(248, 113, 113, 0.4); }
+    100% { transform: translateX(0);    text-shadow: 0 0 0 transparent; }
+  }
+  @keyframes bounceBack {
+    0%   { transform: scale(0.9); opacity: 0.5; }
+    60%  { transform: scale(1.08); opacity: 1; text-shadow: 0 0 14px rgba(132, 204, 22, 0.55); }
+    100% { transform: scale(1);    opacity: 1; text-shadow: 0 0 0 transparent; }
+  }
+
+  /* small pill badge next to AUC: ✓ improved / ✗ rejected */
+  .badge {
+    display: inline-block; margin-left: 8px; font-size: 9px;
+    letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700;
+    padding: 2px 7px; border-radius: 999px;
+    opacity: 0; transition: opacity 0.3s ease;
+    vertical-align: middle; font-family: 'JetBrains Mono', monospace;
+  }
+  .badge.show { opacity: 1; }
+  .badge.improved { background: rgba(132, 204, 22, 0.15); color: var(--good); }
+  .badge.rejected { background: rgba(248, 113, 113, 0.15); color: var(--bad); }
+  .badge.baseline { background: rgba(113, 113, 122, 0.15); color: var(--muted); }
+
+  /* --- right column --- */
+  .right { display: flex; flex-direction: column; gap: 18px; max-width: 520px; padding-top: 6px; }
   .right h1 {
-    font-size: 40px; line-height: 1.1; font-weight: 700; margin: 0;
+    font-size: 36px; line-height: 1.1; font-weight: 700; margin: 0;
     opacity: 0; transform: translateY(6px); transition: opacity 0.6s ease, transform 0.6s ease;
   }
   .stage-on-3 .right h1, .stage-on-4 .right h1, .stage-on-5 .right h1, .stage-on-6 .right h1, .stage-on-7 .right h1 {
     opacity: 1; transform: translateY(0);
   }
 
-  /* problem statement card — appears alongside the heading */
   .problem-card {
     background: var(--bg-soft); border: 1px solid #27272a; border-radius: 10px;
-    padding: 14px 18px; display: flex; flex-direction: column; gap: 6px;
-    font-size: 14px; line-height: 1.5;
+    padding: 12px 16px; display: flex; flex-direction: column; gap: 5px;
+    font-size: 13px; line-height: 1.5;
     opacity: 0; transform: translateY(6px);
     transition: opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s;
   }
@@ -125,68 +183,60 @@
   }
   .problem-card .line { color: #e4e4e7; }
   .problem-card code {
-    font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent);
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent);
     background: rgba(34, 211, 238, 0.08); padding: 1px 6px; border-radius: 4px;
   }
   .stage-on-3 .problem-card, .stage-on-4 .problem-card, .stage-on-5 .problem-card,
   .stage-on-6 .problem-card, .stage-on-7 .problem-card { opacity: 1; transform: translateY(0); }
 
-  .stop-list { list-style: none; padding: 0; margin: 6px 0 0 0; display: flex; flex-direction: column; gap: 12px; }
+  .stop-list { list-style: none; padding: 0; margin: 4px 0 0 0; display: flex; flex-direction: column; gap: 10px; }
   .stop-list li {
-    display: flex; align-items: center; gap: 14px;
-    background: var(--bg-soft); border: 1px solid #27272a; border-radius: 10px;
-    padding: 14px 18px; font-size: 16px; color: #e4e4e7;
+    display: flex; align-items: center; gap: 12px;
+    background: var(--bg-soft); border: 1px solid #27272a; border-radius: 9px;
+    padding: 11px 16px; font-size: 14px; color: #e4e4e7;
     opacity: 0; transform: translateX(-10px); transition: opacity 0.5s ease, transform 0.5s ease;
   }
   .stop-list .icon {
-    width: 28px; height: 28px; border-radius: 7px; display: inline-flex; align-items: center; justify-content: center;
-    background: rgba(244, 114, 182, 0.15); color: var(--pink); font-size: 16px;
+    width: 24px; height: 24px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;
+    background: rgba(244, 114, 182, 0.15); color: var(--pink); font-size: 14px;
   }
-  .stop-list .meta { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); margin-left: auto; }
+  .stop-list .meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); margin-left: auto; }
 
   .stage-on-4 .stop-1, .stage-on-5 .stop-1, .stage-on-6 .stop-1, .stage-on-7 .stop-1 { opacity: 1; transform: translateX(0); }
   .stage-on-5 .stop-2, .stage-on-6 .stop-2, .stage-on-7 .stop-2 { opacity: 1; transform: translateX(0); }
   .stage-on-6 .stop-3, .stage-on-7 .stop-3 { opacity: 1; transform: translateX(0); }
 
-  /* reset state flash — triggered by pressing R */
-  .auc-value.reset-flash { animation: resetFlash 0.7s ease; }
-  @keyframes resetFlash {
-    0%   { color: var(--good); }
-    35%  { color: var(--pink); text-shadow: 0 0 20px rgba(244, 114, 182, 0.9); transform: scale(1.15); }
-    100% { color: var(--good); }
-  }
-
   /* footer hint */
   .hint {
-    position: absolute; bottom: 22px; left: 0; right: 0; text-align: center;
-    font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted);
+    position: absolute; bottom: 18px; left: 0; right: 0; text-align: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted);
     letter-spacing: 0.1em;
   }
   .hint kbd {
     background: var(--bg-soft); border: 1px solid #27272a; border-radius: 4px;
-    padding: 1px 8px; font-family: inherit; color: var(--fg); margin: 0 2px;
+    padding: 1px 7px; font-family: inherit; color: var(--fg); margin: 0 2px;
   }
 
-  /* stagnation glow at the end */
-  .stage-on-7 .auc-value { color: var(--accent-2); text-shadow: 0 0 16px rgba(251, 191, 36, 0.5); }
+  /* reset state flash — triggered by pressing R */
+  .auc-value.reset-flash { animation: resetFlash 0.7s ease; }
+  @keyframes resetFlash {
+    0%   { color: var(--good); transform: scale(1); }
+    35%  { color: var(--pink); text-shadow: 0 0 20px rgba(244, 114, 182, 0.9); transform: scale(1.15); }
+    100% { color: var(--good); transform: scale(1); }
+  }
 </style>
 </head>
 <body class="stage-0">
   <div class="top-title">Autoresearch</div>
 
   <div class="container">
-    <!-- LEFT: loop visual + AUC card stacked -->
+    <!-- LEFT: loop visual + AUC card stacked, top-left aligned -->
     <div class="left-col">
       <div class="loop-wrap">
         <svg class="loop" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
-          <!-- background ring -->
           <circle class="loop-circle" cx="300" cy="300" r="220" />
-
-          <!-- animated arc (draws in on stage 1) -->
           <circle class="loop-arc" cx="300" cy="300" r="220" />
 
-          <!-- 3 directional arrows showing clockwise flow (Agent → Exp → Obs → Agent) -->
-          <!-- positioned at the midpoint of each arc, rotated to point along the tangent -->
           <g class="arrow" transform="translate(490 190) rotate(60)">
             <polygon points="-8,-10 8,0 -8,10" fill="#22d3ee" />
           </g>
@@ -197,39 +247,42 @@
             <polygon points="-8,-10 8,0 -8,10" fill="#22d3ee" />
           </g>
 
-          <!-- the traveling dot (painted BEFORE nodes so it disappears behind them) -->
-          <circle class="dot" cx="0" cy="0">
+          <circle id="dot" class="dot" cx="0" cy="0">
             <animateMotion id="dotMotion" dur="3.5s" repeatCount="indefinite" begin="indefinite"
                            path="M 300 80 A 220 220 0 0 1 490 410 A 220 220 0 0 1 110 410 A 220 220 0 0 1 300 80 Z" />
           </circle>
 
-          <!-- 3 nodes — painted LAST so they're on top of the arc and the dot -->
           <g class="node node-agent" transform="translate(300 80)">
             <rect x="-92" y="-32" width="184" height="64" />
             <text y="-4">🤖 LLM Agent</text>
-            <text y="18" style="font-size:13px;fill:#a1a1aa;font-weight:500">proposes change</text>
+            <text y="18" style="font-size:12px;fill:#a1a1aa;font-weight:500">proposes change</text>
           </g>
           <g class="node node-exp" transform="translate(490 410)">
             <rect x="-92" y="-32" width="184" height="64" />
             <text y="-4">⚙ Experiment</text>
-            <text y="18" style="font-size:13px;fill:#a1a1aa;font-weight:500">run the change</text>
+            <text y="18" style="font-size:12px;fill:#a1a1aa;font-weight:500">run the change</text>
           </g>
           <g class="node node-obs" transform="translate(110 410)">
             <rect x="-92" y="-32" width="184" height="64" />
             <text y="-4">📊 Observe</text>
-            <text y="18" style="font-size:13px;fill:#a1a1aa;font-weight:500">update memory</text>
+            <text y="18" style="font-size:12px;fill:#a1a1aa;font-weight:500">update memory</text>
           </g>
         </svg>
       </div>
 
       <div class="auc-card">
-        <div class="auc-label">Current Metric (AUC-ROC)</div>
-        <div class="auc-value" id="aucVal">0.749</div>
-        <div class="auc-iter" id="iterVal">iteration 0 · baseline</div>
+        <div class="auc-label-block">
+          <div class="auc-label">AUC-ROC</div>
+          <div class="auc-iter" id="iterVal">iteration 0 · baseline</div>
+        </div>
+        <div class="auc-value-wrap">
+          <span class="auc-value" id="aucVal">0.749</span>
+          <span class="badge baseline show" id="badge">baseline</span>
+        </div>
       </div>
     </div>
 
-    <!-- RIGHT: text reveals -->
+    <!-- RIGHT -->
     <div class="right">
       <h1>Iterate until told to stop.</h1>
 
@@ -265,16 +318,32 @@
 
 <script>
 (() => {
-  const trajectory = [0.749, 0.812, 0.871, 0.911, 0.934, 0.944];
-  const TICK_MS = 3500; // matches the dot's animateMotion dur="3.5s"
+  // Sequence of attempts: mix of successes (improve) and fails (revert).
+  // baseline = 0.749. After 6 attempts, champion = 0.944.
+  const SEQUENCE = [
+    { type: 'success', value: 0.812 },
+    { type: 'success', value: 0.871 },
+    { type: 'fail',    value: 0.720 },   // worse than 0.871 → revert
+    { type: 'success', value: 0.911 },
+    { type: 'fail',    value: 0.830 },   // worse than 0.911 → revert
+    { type: 'success', value: 0.944 },
+  ];
+  const BASELINE = 0.749;
+  const TICK_MS = 3500;            // matches dot dur="3.5s"
+  const FAIL_REVERT_MS = 1500;     // attempted value shown for 1.5s before revert
+
   const body = document.body;
   const aucVal = document.getElementById('aucVal');
   const iterVal = document.getElementById('iterVal');
+  const badge = document.getElementById('badge');
+  const dot = document.getElementById('dot');
   const dotMotion = document.getElementById('dotMotion');
 
   let stage = 0;
-  let iter = 0;
+  let stepIdx = 0;
+  let champion = BASELINE;
   let dotTimer = null;
+  let pendingRevert = null;
   const MAX_STAGE = 7;
 
   function setStage(s) {
@@ -284,38 +353,77 @@
     stage = s;
 
     if (s >= 2 && !dotTimer) {
-      // start the dot motion AND start ticking the AUC at the same cadence
       dotMotion.beginElement();
-      iter = 0;
-      bumpAUC(); // immediate first tick → shows 0.812
-      dotTimer = setInterval(bumpAUC, TICK_MS);
+      stepIdx = 0;
+      champion = BASELINE;
+      tick();                                  // immediate first step
+      dotTimer = setInterval(tick, TICK_MS);
     }
     if (s === 7) {
       if (dotTimer) { clearInterval(dotTimer); dotTimer = null; }
-      iterVal.textContent = 'iteration ' + iter + ' · stagnation detected';
+      iterVal.textContent = 'iteration ' + (stepIdx) + ' · stagnation detected';
     }
   }
 
-  function bumpAUC() {
-    if (iter < trajectory.length - 1) { iter++; }
-    aucVal.textContent = trajectory[iter].toFixed(3);
-    iterVal.textContent = 'iteration ' + iter + (iter === trajectory.length - 1 ? ' · stalled' : ' · improving');
-    // flash animation
-    aucVal.classList.remove('flash');
-    // force reflow so animation restarts
-    void aucVal.offsetWidth;
-    aucVal.classList.add('flash');
+  function setBadge(kind, text) {
+    badge.className = 'badge show ' + kind;
+    badge.textContent = text;
+  }
+
+  function tick() {
+    if (pendingRevert) { clearTimeout(pendingRevert); pendingRevert = null; }
+    if (stepIdx >= SEQUENCE.length) {
+      // hold final state — champion already shown
+      return;
+    }
+    const step = SEQUENCE[stepIdx];
+    const iterNum = stepIdx + 1;
+    stepIdx++;
+
+    if (step.type === 'success') {
+      champion = step.value;
+      // success: slide-in green + IMPROVED badge
+      aucVal.className = 'auc-value';
+      void aucVal.offsetWidth;
+      aucVal.textContent = step.value.toFixed(3);
+      aucVal.classList.add('success-flash');
+      iterVal.textContent = 'iteration ' + iterNum + ' · ✓ champion → ' + step.value.toFixed(3);
+      setBadge('improved', 'improved');
+      dot.classList.remove('fail');
+    } else {
+      // fail: red strike + shake; revert to champion after FAIL_REVERT_MS
+      aucVal.className = 'auc-value';
+      void aucVal.offsetWidth;
+      aucVal.textContent = step.value.toFixed(3);
+      aucVal.classList.add('fail-attempt');
+      iterVal.textContent = 'iteration ' + iterNum + ' · ✗ rejected (' + step.value.toFixed(3) + ' < ' + champion.toFixed(3) + ')';
+      setBadge('rejected', 'rejected');
+      dot.classList.add('fail');
+      pendingRevert = setTimeout(() => {
+        aucVal.className = 'auc-value';
+        void aucVal.offsetWidth;
+        aucVal.textContent = champion.toFixed(3);
+        aucVal.classList.add('fail-revert');
+        iterVal.textContent = 'iteration ' + iterNum + ' · champion held at ' + champion.toFixed(3);
+        setBadge('improved', 'champion');
+        dot.classList.remove('fail');
+        pendingRevert = null;
+      }, FAIL_REVERT_MS);
+    }
   }
 
   function reset() {
     if (dotTimer) { clearInterval(dotTimer); dotTimer = null; }
-    iter = 0;
-    aucVal.textContent = trajectory[0].toFixed(3);
-    iterVal.textContent = 'iteration 0 · baseline · reset';
-    // visible reset flash — pink pulse so the viewer sees the slam-back
-    aucVal.classList.remove('flash', 'reset-flash');
+    if (pendingRevert) { clearTimeout(pendingRevert); pendingRevert = null; }
+    stepIdx = 0;
+    champion = BASELINE;
+    aucVal.className = 'auc-value';
     void aucVal.offsetWidth;
+    aucVal.textContent = BASELINE.toFixed(3);
     aucVal.classList.add('reset-flash');
+    iterVal.textContent = 'iteration 0 · baseline · reset';
+    setBadge('baseline', 'baseline');
+    dot.classList.remove('fail');
     setStage(0);
   }
 
