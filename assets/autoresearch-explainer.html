@@ -52,7 +52,7 @@
   .slide-2 {
     position: absolute; inset: 0;
     display: flex; flex-direction: column; align-items: center;
-    padding: 70px 4vw 60px;
+    padding: 130px 4vw 60px;        /* generous top padding — less crowded */
     opacity: 0; pointer-events: none;
     transition: opacity 0.7s ease 0.2s;
   }
@@ -110,7 +110,8 @@
   .stage-on-6 .tool-card:nth-child(3), .stage-on-7 .tool-card:nth-child(3), .stage-on-8 .tool-card:nth-child(3) { transition-delay: 0.25s; }
   .stage-on-6 .tool-card:nth-child(4), .stage-on-7 .tool-card:nth-child(4), .stage-on-8 .tool-card:nth-child(4) { transition-delay: 0.35s; }
 
-  .tool-card .tool-icon { font-size: 22px; }
+  .tool-card .tool-icon { color: var(--accent); display: flex; align-items: center; }
+  .tool-card .tool-icon svg { width: 22px; height: 22px; display: block; }
   .tool-card .tool-name { font-size: 15px; font-weight: 700; color: #f4f4f5; }
   .tool-card .tool-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
   .tool-card code {
@@ -434,22 +435,45 @@
 
     <div class="tools-grid">
       <div class="tool-card">
-        <div class="tool-icon">📝</div>
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="16 18 22 12 16 6"/>
+            <polyline points="8 6 2 12 8 18"/>
+          </svg>
+        </div>
         <div class="tool-name">Edit code</div>
         <div class="tool-desc"><code>params.yaml</code> + <code>train.py</code></div>
       </div>
       <div class="tool-card">
-        <div class="tool-icon">⚙</div>
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="8" height="8" rx="1"/>
+            <path d="M7 11v4a2 2 0 0 0 2 2h4"/>
+            <rect x="13" y="13" width="8" height="8" rx="1"/>
+          </svg>
+        </div>
         <div class="tool-name">Submit pipelines</div>
         <div class="tool-desc">Kubeflow on GKE</div>
       </div>
       <div class="tool-card">
-        <div class="tool-icon">📊</div>
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3v18h18"/>
+            <path d="m19 9-5 5-4-4-3 3"/>
+          </svg>
+        </div>
         <div class="tool-name">Track + gate</div>
         <div class="tool-desc">MLflow · <code>@champion</code></div>
       </div>
       <div class="tool-card">
-        <div class="tool-icon">🚀</div>
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="6" y1="3" x2="6" y2="15"/>
+            <circle cx="18" cy="6" r="3"/>
+            <circle cx="6" cy="18" r="3"/>
+            <path d="M18 9a9 9 0 0 1-9 9"/>
+          </svg>
+        </div>
         <div class="tool-name">Ship via GitOps</div>
         <div class="tool-desc">GitHub App + ArgoCD</div>
       </div>
@@ -465,16 +489,17 @@
     </div>
 
     <div class="prod-card">
-      <div class="step"><div class="step-name">PR (signed)</div><div class="step-sub">github app</div></div>
+      <div class="step"><div class="step-name">KFP run</div><div class="step-sub">train + evaluate</div></div>
       <div class="arrow-flow">→</div>
-      <div class="step"><div class="step-name">CI green</div><div class="step-sub">lint · test · build</div></div>
+      <div class="step"><div class="step-name">MLflow</div><div class="step-sub">@champion promoted</div></div>
       <div class="arrow-flow">→</div>
-      <div class="step"><div class="step-name">ArgoCD sync</div><div class="step-sub">k8s/ on main</div></div>
+      <div class="step"><div class="step-name">Signed PR</div><div class="step-sub">github app · CI green</div></div>
+      <div class="arrow-flow">→</div>
+      <div class="step"><div class="step-name">ArgoCD</div><div class="step-sub">k8s/ on main</div></div>
       <div class="arrow-flow">→</div>
       <div class="step"><div class="step-name">Live inference</div><div class="step-sub">new @champion serving</div></div>
     </div>
 
-    <div class="s2-footer">Karpathy showed the loop. We built the harness.</div>
   </div>
 
 <script>
