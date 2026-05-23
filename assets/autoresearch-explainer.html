@@ -391,9 +391,10 @@
     opacity: 0; transform: translateX(-10px); transition: opacity 0.5s ease, transform 0.5s ease;
   }
   .stop-list .icon {
-    width: 22px; height: 22px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;
-    background: rgba(34, 211, 238, 0.12); color: var(--accent); font-size: 13px;
+    width: 28px; height: 28px; border-radius: 7px; display: inline-flex; align-items: center; justify-content: center;
+    background: rgba(34, 211, 238, 0.12); color: var(--accent); flex-shrink: 0;
   }
+  .stop-list .icon svg { width: 16px; height: 16px; }
   .stop-list .meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); margin-left: auto; }
 
   .stage-on-3 .stop-1, .stage-on-4 .stop-1 { opacity: 1; transform: translateX(0); transition-delay: 0.20s; }
@@ -430,17 +431,17 @@
 
           <g class="node node-agent" transform="translate(300 80)">
             <rect x="-92" y="-32" width="184" height="64" />
-            <text y="-4">🤖 LLM Agent</text>
+            <text y="-4">LLM Agent</text>
             <text y="18" style="font-size:12px;fill:#a1a1aa;font-weight:500">proposes change</text>
           </g>
           <g class="node node-exp" transform="translate(490 410)">
             <rect x="-92" y="-32" width="184" height="64" />
-            <text y="-4">⚙ Experiment</text>
+            <text y="-4">Experiment</text>
             <text y="18" style="font-size:12px;fill:#a1a1aa;font-weight:500">run the change</text>
           </g>
           <g class="node node-obs" transform="translate(110 410)">
             <rect x="-92" y="-32" width="184" height="64" />
-            <text y="-4">📊 Observe</text>
+            <text y="-4">Observe</text>
             <text y="18" style="font-size:12px;fill:#a1a1aa;font-weight:500">update memory</text>
           </g>
         </svg>
@@ -474,17 +475,33 @@
         <div class="section-label">Stops when…</div>
         <ul class="stop-list">
           <li class="stop-1">
-            <span class="icon">⏱</span>
+            <span class="icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </span>
             <span>Time budget exhausted</span>
             <span class="meta">--hours 8</span>
           </li>
           <li class="stop-2">
-            <span class="icon">🎯</span>
+            <span class="icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <circle cx="12" cy="12" r="6"/>
+                <circle cx="12" cy="12" r="2"/>
+              </svg>
+            </span>
             <span>Target metric reached</span>
             <span class="meta">metric ≥ goal</span>
           </li>
           <li class="stop-3">
-            <span class="icon">📉</span>
+            <span class="icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/>
+                <polyline points="16 17 22 17 22 11"/>
+              </svg>
+            </span>
             <span>No improvement for N iterations</span>
             <span class="meta">stagnation</span>
           </li>
