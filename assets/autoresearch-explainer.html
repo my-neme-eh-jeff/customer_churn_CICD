@@ -505,7 +505,7 @@
                 <polyline points="16 17 22 17 22 11"/>
               </svg>
             </span>
-            <span>No improvement for N iterations</span>
+            <span>No improvement accross <code>m</code> iterations</span>
             <span class="meta">stagnation</span>
           </li>
         </ul>
@@ -668,17 +668,21 @@
   // (could be conversion, latency-rank, accuracy, anything you can phrase
   // as a metric). Decimals like 0.812 read as ML/AUC; that's premature
   // for slide 1 where we haven't introduced the actual problem yet.
+  // 9-iter narrative:
+  //   1-6: improvements (one rejected attempt at iter 3 for the gate demo)
+  //   7-9: three consecutive failed attempts — only NOW the system has basis
+  //        to declare 'no improvement for N iters' and stagnate. Stagnation
+  //        is detected AFTER iter 9 plays out, not on the first failure.
   const SEQUENCE = [
-    { type: 'success', value: 81 },
-    { type: 'success', value: 87 },
-    { type: 'success', value: 89 },
-    { type: 'fail',    value: 78 },     // single rejection — narrative centerpiece
-    { type: 'success', value: 92 },
-    { type: 'success', value: 94 },
-    { type: 'success', value: 95 },
-    { type: 'fail',    value: 91 },
-    { type: 'success', value: 96 },
-    { type: 'fail',    value: 95 },     // last attempt — triggers stagnation
+    { type: 'success', value: 81 },     // 1
+    { type: 'success', value: 87 },     // 2
+    { type: 'fail',    value: 78 },     // 3 — mid-run rejection (gate demo)
+    { type: 'success', value: 89 },     // 4
+    { type: 'success', value: 92 },     // 5
+    { type: 'success', value: 96 },     // 6 — best metric hit
+    { type: 'fail',    value: 89 },     // 7 — no improvement #1
+    { type: 'fail',    value: 93 },     // 8 — no improvement #2
+    { type: 'fail',    value: 95 },     // 9 — no improvement #3 → STAGNATION
   ];
   const BASELINE = 75;
   const TICK_MS = 3500;
@@ -768,6 +772,15 @@
       setBadge('rejected', 'rejected');
       dot.classList.add('fail');
       pendingRevert = setTimeout(() => {
+        // If this is the LAST iter in the sequence, the system now has 3
+        // consecutive non-improvements (iters 7, 8, 9) and stagnation can
+        // be declared. Transition directly to stagnation state instead of
+        // showing the normal 'held at X' revert message.
+        if (stepIdx >= SEQUENCE.length && stage < 4) {
+          setStage(4);
+          pendingRevert = null;
+          return;
+        }
         aucVal.className = 'auc-value';
         void aucVal.offsetWidth;
         aucVal.textContent = fmt(champion);
