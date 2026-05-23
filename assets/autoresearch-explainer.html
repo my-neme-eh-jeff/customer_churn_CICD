@@ -32,6 +32,10 @@
     opacity: 1; transition: opacity 0.6s ease;
   }
   .stage-0 .top-title { opacity: 0.4; }
+  /* hide the top title on slides 2 and 3 — only slide 1 needs the chrome */
+  .stage-on-5 .top-title, .stage-on-6 .top-title, .stage-on-7 .top-title, .stage-on-8 .top-title {
+    opacity: 0;
+  }
 
   .container {
     flex: 1;
@@ -78,30 +82,31 @@
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
     width: 100%; max-width: 1000px;
   }
-  .problem-card {
+  /* renamed from .problem-card to avoid collision with slide-1's right-column problem-card */
+  .miss-card {
     background: var(--bg-soft); border: 1px solid #27272a; border-radius: 12px;
-    padding: 28px 26px; display: flex; flex-direction: column; gap: 12px;
-    min-height: 220px;
+    padding: 18px 20px; display: flex; flex-direction: column; gap: 8px;
     opacity: 0; transform: translateY(8px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
-  .stage-on-5 .problem-card:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.15s; }
-  .stage-on-5 .problem-card:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.30s; }
-  .stage-on-5 .problem-card:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.45s; }
+  .stage-on-5 .miss-card:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.15s; }
+  .stage-on-5 .miss-card:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.30s; }
+  .stage-on-5 .miss-card:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.45s; }
 
-  .problem-card .pc-icon {
+  .miss-card .pc-icon {
     color: var(--bad); display: flex; align-items: center; justify-content: center;
-    width: 48px; height: 48px; border-radius: 10px;
+    width: 38px; height: 38px; border-radius: 9px;
     background: rgba(248, 113, 113, 0.08); border: 1px solid rgba(248, 113, 113, 0.2);
-    margin-bottom: 4px;
+    margin-bottom: 2px;
   }
-  .problem-card .pc-icon svg { width: 26px; height: 26px; }
-  .problem-card .pc-name { font-size: 18px; font-weight: 700; color: #f4f4f5; }
-  .problem-card .pc-desc { font-size: 14px; color: var(--muted); line-height: 1.55; }
+  .miss-card .pc-icon svg { width: 20px; height: 20px; }
+  .miss-card .pc-name { font-size: 16px; font-weight: 700; color: #f4f4f5; }
+  .miss-card .pc-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
 
   /* Karpathy video reference — YouTube iframe embed below the 3 problem cards */
   .video-ref {
-    margin-top: 36px; display: flex; flex-direction: column; align-items: center; gap: 8px;
+    margin-top: 20px; display: flex; flex-direction: column; align-items: center; gap: 10px;
+    width: 100%;
     opacity: 0; transform: translateY(8px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
@@ -111,7 +116,7 @@
     color: var(--muted); font-weight: 700;
   }
   .video-wrapper {
-    width: 100%; max-width: 480px;
+    width: 100%; max-width: 760px;
     aspect-ratio: 16 / 9;
     border-radius: 10px;
     overflow: hidden;
@@ -516,7 +521,7 @@
     <p class="s2-tag">A few things were missing from a production ready scenario.</p>
 
     <div class="problems-grid">
-      <div class="problem-card">
+      <div class="miss-card">
         <div class="pc-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="2" y="3" width="20" height="14" rx="2"/>
@@ -527,7 +532,7 @@
         <div class="pc-name">Hardware-bound</div>
         <div class="pc-desc">Needs a Mac mini farm. Most of us don't have one.</div>
       </div>
-      <div class="problem-card">
+      <div class="miss-card">
         <div class="pc-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -537,7 +542,7 @@
         <div class="pc-name">Single-player</div>
         <div class="pc-desc">One dev, one machine. No path for collaborators.</div>
       </div>
-      <div class="problem-card">
+      <div class="miss-card">
         <div class="pc-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
