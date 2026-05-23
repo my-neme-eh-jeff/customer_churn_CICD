@@ -99,6 +99,27 @@
   .problem-card .pc-name { font-size: 18px; font-weight: 700; color: #f4f4f5; }
   .problem-card .pc-desc { font-size: 14px; color: var(--muted); line-height: 1.55; }
 
+  /* Karpathy video reference — YouTube iframe embed below the 3 problem cards */
+  .video-ref {
+    margin-top: 36px; display: flex; flex-direction: column; align-items: center; gap: 8px;
+    opacity: 0; transform: translateY(8px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .stage-on-5 .video-ref { opacity: 1; transform: translateY(0); transition-delay: 0.6s; }
+  .video-ref .caption {
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700;
+  }
+  .video-wrapper {
+    width: 100%; max-width: 480px;
+    aspect-ratio: 16 / 9;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #27272a;
+    background: #000;
+  }
+  .video-wrapper iframe { width: 100%; height: 100%; border: 0; display: block; }
+
   /* === SLIDE 3 — the harness (stages 6-8) === */
   .slide-2 { /* keep selector for now (HTML stays as is) — inherits .slide-overlay */ }
   .stage-on-6 .slide-2, .stage-on-7 .slide-2, .stage-on-8 .slide-2 {
@@ -508,6 +529,21 @@
         </div>
         <div class="pc-name">No production</div>
         <div class="pc-desc">Local scripts can't reach live users.</div>
+      </div>
+    </div>
+
+    <!-- Karpathy video — REPLACE the video ID below with the actual autoresearch video ID
+         (e.g. https://www.youtube.com/watch?v=YOUR_ID → embed/YOUR_ID).
+         Currently set to 'Let's build GPT' as a placeholder until you paste the right URL. -->
+    <div class="video-ref">
+      <div class="caption">Karpathy's original — for context</div>
+      <div class="video-wrapper">
+        <iframe
+          src="https://www.youtube.com/embed/kCc8FmEb1nY"
+          title="Karpathy — original autoresearch demo"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
       </div>
     </div>
   </div>
