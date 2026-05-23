@@ -48,51 +48,79 @@
     pointer-events: none;
   }
 
-  /* === SLIDE 2 — the harness === */
-  .slide-2 {
+  /* shared slide chrome */
+  .slide-overlay {
     position: absolute; inset: 0;
     display: flex; flex-direction: column; align-items: center;
-    padding: 130px 4vw 60px;        /* generous top padding — less crowded */
+    padding: 130px 4vw 60px;
     opacity: 0; pointer-events: none;
     transition: opacity 0.7s ease 0.2s;
   }
-  .stage-on-5 .slide-2, .stage-on-6 .slide-2, .stage-on-7 .slide-2, .stage-on-8 .slide-2 {
-    opacity: 1; pointer-events: auto;
-  }
-
-  .slide-2 .s2-header {
-    font-size: 36px; font-weight: 700; margin: 0 0 6px 0;
+  .slide-overlay .s2-header {
+    font-size: 32px; font-weight: 700; margin: 0 0 6px 0;
     opacity: 0; transform: translateY(-6px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
-  .slide-2 .s2-tag {
-    font-size: 15px; color: var(--muted); margin: 0 0 32px 0;
+  .slide-overlay .s2-tag {
+    font-size: 15px; color: var(--muted); margin: 0 0 28px 0; max-width: 700px; text-align: center;
     opacity: 0; transform: translateY(-6px);
     transition: opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s;
   }
-  .stage-on-5 .s2-header, .stage-on-6 .s2-header, .stage-on-7 .s2-header, .stage-on-8 .s2-header,
-  .stage-on-5 .s2-tag,    .stage-on-6 .s2-tag,    .stage-on-7 .s2-tag,    .stage-on-8 .s2-tag {
+
+  /* === SLIDE 2 — the problem (stage 5 only) === */
+  .slide-2-problem { /* inherits .slide-overlay */ }
+  .stage-on-5 .slide-2-problem { opacity: 1; pointer-events: auto; }
+  .stage-on-5 .slide-2-problem .s2-header, .stage-on-5 .slide-2-problem .s2-tag {
     opacity: 1; transform: translateY(0);
   }
 
-  /* actors line — small inline chips, neutral styling, all equal participants */
+  .problems-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    width: 100%; max-width: 1000px;
+  }
+  .problem-card {
+    background: var(--bg-soft); border: 1px solid #27272a; border-radius: 10px;
+    padding: 18px 20px; display: flex; flex-direction: column; gap: 8px;
+    opacity: 0; transform: translateY(8px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .stage-on-5 .problem-card:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.15s; }
+  .stage-on-5 .problem-card:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.30s; }
+  .stage-on-5 .problem-card:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.45s; }
+
+  .problem-card .pc-icon { color: var(--bad); display: flex; }
+  .problem-card .pc-icon svg { width: 22px; height: 22px; }
+  .problem-card .pc-name { font-size: 16px; font-weight: 700; color: #f4f4f5; }
+  .problem-card .pc-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* === SLIDE 3 — the harness (stages 6-8) === */
+  .slide-2 { /* keep selector for now (HTML stays as is) — inherits .slide-overlay */ }
+  .stage-on-6 .slide-2, .stage-on-7 .slide-2, .stage-on-8 .slide-2 {
+    opacity: 1; pointer-events: auto;
+  }
+  .stage-on-6 .slide-2 .s2-header, .stage-on-7 .slide-2 .s2-header, .stage-on-8 .slide-2 .s2-header,
+  .stage-on-6 .slide-2 .s2-tag,    .stage-on-7 .slide-2 .s2-tag,    .stage-on-8 .slide-2 .s2-tag {
+    opacity: 1; transform: translateY(0);
+  }
+
+  /* actors line — left-aligned with tool grid, no middot separators */
   .actors-line {
-    display: flex; align-items: center; gap: 14px;
-    margin: 22px 0 24px 0;
+    display: flex; align-items: center; gap: 10px;
+    width: 100%; max-width: 1100px;
+    margin: 16px 0 24px 0;
     opacity: 0; transform: translateY(8px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
   .stage-on-7 .actors-line, .stage-on-8 .actors-line { opacity: 1; transform: translateY(0); }
   .actors-label {
     font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--muted); font-weight: 700;
+    color: var(--muted); font-weight: 700; margin-right: 6px;
   }
   .actor-chip {
-    font-size: 14px; color: #e4e4e7; font-weight: 500;
+    font-size: 13px; color: #e4e4e7; font-weight: 500;
     padding: 5px 12px; background: var(--bg-soft); border: 1px solid #27272a;
     border-radius: 999px;
   }
-  .actor-sep { color: #3f3f46; font-weight: 700; }
 
   /* tools row — 4 tool cards (revealed at stage 6 now) */
   .tools-grid {
@@ -120,30 +148,40 @@
     padding: 1px 5px; border-radius: 4px;
   }
 
-  /* prod card — final GitOps → cluster line */
-  .prod-card {
-    background: var(--bg-soft);
-    border: 1px solid #27272a; border-radius: 12px;
-    padding: 16px 24px; max-width: 1100px; width: 100%;
-    display: flex; align-items: center; justify-content: center; gap: 18px;
+  /* extended loop — sleek station-style flow, aligned to tool grid rail */
+  .extended-loop {
+    width: 100%; max-width: 1100px;
     opacity: 0; transform: translateY(8px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
-  .stage-on-7 .prod-card, .stage-on-8 .prod-card { opacity: 1; transform: translateY(0); }
-  .prod-card .step { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-  .prod-card .step-name { font-size: 13px; font-weight: 700; color: #f4f4f5; }
-  .prod-card .step-sub { font-size: 10px; color: var(--muted); letter-spacing: 0.05em; }
-  .prod-card .arrow-flow { color: var(--accent); font-size: 18px; font-weight: 700; }
-
-  /* footer punchline — lands the Karpathy comparison */
-  .s2-footer {
-    margin-top: 32px;
-    font-size: 14px; color: var(--muted); font-style: italic;
-    text-align: center;
-    opacity: 0; transform: translateY(6px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
+  .stage-on-8 .extended-loop { opacity: 1; transform: translateY(0); }
+  .extended-loop .ext-label {
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700; margin-bottom: 16px;
   }
-  .stage-on-8 .s2-footer { opacity: 1; transform: translateY(0); }
+  .stations { display: flex; align-items: flex-start; }
+  .station {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    flex: 0 0 auto; padding: 0 6px; min-width: 100px;
+  }
+  .station-dot {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--accent);
+    box-shadow: 0 0 8px rgba(34, 211, 238, 0.3);
+  }
+  .station-dot.live {
+    background: var(--good); border-color: var(--good);
+    box-shadow: 0 0 12px rgba(132, 204, 22, 0.5);
+  }
+  .station-name { font-size: 13px; font-weight: 700; color: #f4f4f5; text-align: center; }
+  .station-sub { font-size: 10px; color: var(--muted); text-align: center; letter-spacing: 0.04em; }
+  .station-line {
+    flex: 1; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent));
+    opacity: 0.25;
+    margin-top: 14px;
+    min-width: 24px;
+  }
 
   /* --- LEFT column: loop + card, both center-aligned to col width --- */
   .left-col {
@@ -428,9 +466,49 @@
     </div>
   </div>
 
-  <!-- === SLIDE 2 — the harness (stages 5-8) === -->
-  <div class="slide-2">
-    <h2 class="s2-header">The harness.</h2>
+  <!-- === SLIDE 2 — the problem (stage 5) === -->
+  <div class="slide-2-problem slide-overlay">
+    <h2 class="s2-header">The problem.</h2>
+    <p class="s2-tag">Karpathy showed it on a Mac mini farm. Three things were missing.</p>
+
+    <div class="problems-grid">
+      <div class="problem-card">
+        <div class="pc-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+        </div>
+        <div class="pc-name">Hardware-bound</div>
+        <div class="pc-desc">Needs a Mac mini farm. Most of us don't have one.</div>
+      </div>
+      <div class="problem-card">
+        <div class="pc-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </div>
+        <div class="pc-name">Single-player</div>
+        <div class="pc-desc">One dev, one machine. No path for collaborators.</div>
+      </div>
+      <div class="problem-card">
+        <div class="pc-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+            <line x1="2" y1="2" x2="22" y2="22"/>
+          </svg>
+        </div>
+        <div class="pc-name">No production</div>
+        <div class="pc-desc">Local scripts can't reach live users.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- === SLIDE 3 — the harness (stages 6-8) === -->
+  <div class="slide-2 slide-overlay">
+    <h2 class="s2-header">The harness</h2>
     <p class="s2-tag">Cloud-native. CI/CD. Multi-player.</p>
 
     <div class="tools-grid">
@@ -442,7 +520,7 @@
           </svg>
         </div>
         <div class="tool-name">Edit training code</div>
-        <div class="tool-desc"><code>params.yaml</code> · <code>train.py</code> · <code>preprocess.py</code></div>
+        <div class="tool-desc"><code>params.yaml</code> · <code>train.py</code></div>
       </div>
       <div class="tool-card">
         <div class="tool-icon">
@@ -482,22 +560,42 @@
     <div class="actors-line">
       <span class="actors-label">Shared by</span>
       <span class="actor-chip">🤖 Claude</span>
-      <span class="actor-sep">·</span>
       <span class="actor-chip">🤖 other agents</span>
-      <span class="actor-sep">·</span>
       <span class="actor-chip">👤 humans</span>
     </div>
 
-    <div class="prod-card">
-      <div class="step"><div class="step-name">KFP run</div><div class="step-sub">train + evaluate</div></div>
-      <div class="arrow-flow">→</div>
-      <div class="step"><div class="step-name">MLflow</div><div class="step-sub">@champion promoted</div></div>
-      <div class="arrow-flow">→</div>
-      <div class="step"><div class="step-name">Signed PR</div><div class="step-sub">github app · CI green</div></div>
-      <div class="arrow-flow">→</div>
-      <div class="step"><div class="step-name">ArgoCD</div><div class="step-sub">k8s/ on main</div></div>
-      <div class="arrow-flow">→</div>
-      <div class="step"><div class="step-name">Live inference</div><div class="step-sub">new @champion serving</div></div>
+    <div class="extended-loop">
+      <div class="ext-label">Extended loop · after a winner</div>
+      <div class="stations">
+        <div class="station">
+          <div class="station-dot"></div>
+          <div class="station-name">KFP</div>
+          <div class="station-sub">train + evaluate</div>
+        </div>
+        <div class="station-line"></div>
+        <div class="station">
+          <div class="station-dot"></div>
+          <div class="station-name">MLflow</div>
+          <div class="station-sub">@champion promoted</div>
+        </div>
+        <div class="station-line"></div>
+        <div class="station">
+          <div class="station-dot"></div>
+          <div class="station-name">Signed PR</div>
+          <div class="station-sub">github app · CI</div>
+        </div>
+        <div class="station-line"></div>
+        <div class="station">
+          <div class="station-dot"></div>
+          <div class="station-name">ArgoCD</div>
+        </div>
+        <div class="station-line"></div>
+        <div class="station">
+          <div class="station-dot live"></div>
+          <div class="station-name">Live inference</div>
+          <div class="station-sub">new @champion</div>
+        </div>
+      </div>
     </div>
 
   </div>
