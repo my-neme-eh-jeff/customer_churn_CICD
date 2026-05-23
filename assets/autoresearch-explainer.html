@@ -120,15 +120,21 @@
   .video-ref .caption {
     font-size: 15px; color: var(--muted); font-weight: 400; font-style: italic;
   }
-  /* fixed-size tweet wrapper — prevents layout shift between announcement
-     (taller, with image) and outage (shorter, text-only) tweets */
+  /* Tweet wrapper — width-constrained, auto-height. The slide-overlay above
+     does justify-content: center, so the whole content block re-centers
+     vertically as the tweet height changes between slides. min-height
+     reserves space during widgets.js load so the page doesn't jump-shift
+     before the tweet renders. */
   .tweet-wrapper {
     width: 100%; max-width: 560px;
-    height: 480px;
-    overflow: hidden;
-    display: flex; justify-content: center; align-items: flex-start;
+    min-height: 320px;
+    display: flex; justify-content: center;
   }
   .tweet-wrapper .twitter-tweet { margin: 0 !important; max-width: 100% !important; }
+  /* Tighter top/bottom padding on the two tweet slides so the announcement
+     tweet (with chart image) fits on a 1080p viewport without clipping. */
+  .slide-2-intro, .slide-2-problem { padding: 32px 4vw; }
+  .slide-2-intro .s2-tag, .slide-2-problem .s2-tag { margin-bottom: 20px; }
 
   /* === SLIDE 3 — the harness (stages 7-9) === */
   .slide-2 { /* keep selector for now (HTML stays as is) — inherits .slide-overlay */ }
@@ -265,24 +271,31 @@
   .dot.fail { fill: var(--bad); filter: drop-shadow(0 0 14px rgba(248, 113, 113, 0.9)); }
 
   /* --- AUC card — FIXED width to prevent layout shift between success/fail ---
-       Two rows: top = label + value + badge, bottom = iter text */
+       2x2 grid: label/iter on LHS column, value/badge stacked on RHS column */
   .auc-card {
     background: var(--bg-soft); border: 1px solid #27272a; border-radius: 10px;
     padding: 12px 18px;
     width: 400px;                    /* fixed width — no shift */
-    display: flex; flex-direction: column; gap: 6px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 16px;
+    row-gap: 6px;
+    align-items: center;
     opacity: 0; transition: opacity 0.5s ease;
   }
   .stage-on-2 .auc-card, .stage-on-3 .auc-card, .stage-on-4 .auc-card { opacity: 1; }
 
-  .auc-row-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-  .auc-label { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  .auc-label {
+    grid-column: 1; grid-row: 1;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); font-weight: 700;
+  }
   .auc-iter {
+    grid-column: 1; grid-row: 2;
     font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .auc-value-wrap { display: flex; align-items: center; gap: 8px; }
   .auc-value {
+    grid-column: 2; grid-row: 1; justify-self: end;
     font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 24px;
     color: var(--good); display: inline-block; line-height: 1.1;
     transition: color 0.3s ease;
@@ -322,8 +335,9 @@
     100% { transform: scale(1);    opacity: 1; text-shadow: 0 0 0 transparent; }
   }
 
-  /* badge pill */
+  /* badge pill — sits directly under the value in the right column */
   .badge {
+    grid-column: 2; grid-row: 2; justify-self: end;
     display: inline-block; font-size: 9px;
     letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700;
     padding: 2px 8px; border-radius: 999px;
@@ -457,16 +471,12 @@
         </svg>
       </div>
 
-      <!-- Metric card: fixed width 400px, two-row layout, centered under the loop -->
+      <!-- Metric card: fixed width 400px, 2x2 grid — label/iter LHS, value/badge stacked RHS -->
       <div class="auc-card">
-        <div class="auc-row-top">
-          <div class="auc-label">Metric</div>
-          <div class="auc-value-wrap">
-            <span class="auc-value" id="aucVal">75%</span>
-            <span class="badge baseline show" id="badge">baseline</span>
-          </div>
-        </div>
-        <div class="auc-iter" id="iterVal">iteration 0 · baseline</div>
+        <div class="auc-label">Metric</div>
+        <span class="auc-value" id="aucVal">75%</span>
+        <div class="auc-iter" id="iterVal">iteration 0</div>
+        <span class="badge baseline show" id="badge">baseline</span>
       </div>
     </div>
 
@@ -749,7 +759,7 @@
       void aucVal.offsetWidth;
       aucVal.textContent = fmt(champion);
       iterVal.textContent = 'iteration ' + stepIdx + ' · stagnation detected';
-      setBadge('improved', 'best');
+      setBadge('rejected', 'stagnant');
       dot.classList.remove('fail');
     }
   }
@@ -777,7 +787,7 @@
       void aucVal.offsetWidth;
       aucVal.textContent = fmt(step.value);
       aucVal.classList.add('success-flash');
-      iterVal.textContent = 'iteration ' + iterNum + ' · improved';
+      iterVal.textContent = 'iteration ' + iterNum;
       setBadge('improved', 'improved');
       dot.classList.remove('fail');
     } else {
@@ -785,7 +795,7 @@
       void aucVal.offsetWidth;
       aucVal.textContent = fmt(step.value);
       aucVal.classList.add('fail-attempt');
-      iterVal.textContent = 'iteration ' + iterNum + ' · rejected (' + fmt(step.value) + ' < ' + fmt(champion) + ')';
+      iterVal.textContent = 'iteration ' + iterNum + ' · ' + fmt(step.value) + ' < ' + fmt(champion);
       setBadge('rejected', 'rejected');
       dot.classList.add('fail');
       pendingRevert = setTimeout(() => {
@@ -802,7 +812,7 @@
         void aucVal.offsetWidth;
         aucVal.textContent = fmt(champion);
         aucVal.classList.add('fail-revert');
-        iterVal.textContent = 'iteration ' + iterNum + ' · held at ' + fmt(champion);
+        iterVal.textContent = 'iteration ' + iterNum;
         setBadge('improved', 'best');
         dot.classList.remove('fail');
         pendingRevert = null;
