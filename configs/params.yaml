@@ -2,26 +2,80 @@ dataset:
   csv_path: data/ieee_cis.parquet
   target_column: isFraud
   drop_columns: [TransactionID, TransactionDT]
-  numeric_features: [TransactionAmt]
-  categorical_features: [ProductCD]
+  numeric_features:
+    - TransactionAmt
+    - card1
+    - card2
+    - card3
+    - card5
+    - addr1
+    - addr2
+    - dist1
+    - dist2
+    - C1
+    - C2
+    - C3
+    - C4
+    - C5
+    - C6
+    - C7
+    - C8
+    - C9
+    - C10
+    - C11
+    - C12
+    - C13
+    - C14
+    - D1
+    - D2
+    - D3
+    - D4
+    - D5
+    - D6
+    - D7
+    - D8
+    - D9
+    - D10
+    - D11
+    - D12
+    - D13
+    - D14
+    - D15
+  categorical_features:
+    - ProductCD
+    - card4
+    - card6
+    - P_emaildomain
+    - R_emaildomain
+    - M1
+    - M2
+    - M3
+    - M4
+    - M5
+    - M6
+    - M7
+    - M8
+    - M9
 
 preprocess:
   test_size: 0.2
   random_state: 42
 
 train:
-  model_type: DecisionTreeClassifier
+  model_type: HistGradientBoostingClassifier
   random_state: 42
-  max_depth: null
+  max_depth: 6
   max_features: null
-  n_estimators: 100
+  n_estimators: 300
   min_samples_split: 2
-  min_samples_leaf: 1
+  min_samples_leaf: 20
   class_weight: null
   bootstrap: true
-  learning_rate: 0.1
+  learning_rate: 0.05
   subsample: 1.0
   use_log_transform: false
+  l2_regularization: 0.1
+  early_stopping: false
 
 # Read only by auto_experiment/auto_loop.py. The evaluate stage's promotion
 # metric (auc_roc) and auto_promote behaviour are wired in src/evaluate.py;
