@@ -1,13 +1,13 @@
 # Autoresearch Demo Script
 
 > Final script for the ~5-minute demo. Local-only doc (gitignored: no — checked in so future-me has it).
-> **Target cut:** ~5:00. **Hard cap:** 6:00.
-> **Recording tool:** screen recorder (ScreenKite, OBS, QuickTime — anything that captures full screen).
+> **Target cut:** ~3:30. **Hard cap:** 4:00.
+> **Recording tool:** ScreenKite. Cursor positions matter (ScreenKite zooms to the cursor on movement).
 > **Camera:** off. Webcam overlay disabled.
 
 The script splits cleanly into **two energies**:
-- **0:00 – 1:35 — opener.** Flashy, hook-driven, narrated against the animated explainer (`assets/autoresearch-explainer.html`). Three slides: the loop, Karpathy's lineage + the production gaps, the harness. This is where you earn the viewer's attention.
-- **1:35 – 5:00 — the walkthrough + close.** Plain, factual, technical. "This is what's happening, here's why it matters." Don't try to be flashy — the system is the proof. Close on a single trajectory plot, not on the MLflow runs list.
+- **0:00 – 1:00 — opener.** Flashy, hook-driven, narrated against the animated explainer (`assets/autoresearch-explainer.html`). Karpathy announcement tweet (cold open) → his loop visualized → outage + the three gaps → the harness reveal. This is where you earn the viewer's attention. Don't move the cursor during this segment — ScreenKite will leave a static cursor alone.
+- **1:00 – 3:30 — the walkthrough + close.** Plain, factual, technical. Cursor choreography matters here: every move triggers a ScreenKite zoom. Close on a single trajectory plot, not the MLflow runs list.
 
 ---
 
@@ -54,9 +54,9 @@ The script splits cleanly into **two energies**:
 
 7. **DND on.** Dock auto-hide. Menubar hide. Notifications cleared. Quiet room.
 
-8. **Trajectory plot — generate AFTER the autoresearch run finishes, BEFORE recording the close.** Reads `auto_experiment/history.tsv`, writes `auto_experiment/trajectory.png` — line plot of metric by iteration with baseline marker at iter 0, promotion ticks where champion advanced, and a stagnation marker at the final iter.
-   - `make plot-trajectory` (TODO: add target; one-shot matplotlib script over `history.tsv`).
-   - Sanity-check the PNG: baseline visible on the left, monotonic-ish climb, final marker at the right. If the run was short / no champion ever moved, the plot is boring — re-run with a longer N before the take.
+8. **Trajectory plot — generate AFTER the autoresearch run finishes, BEFORE recording the close.** `make plot-trajectory` reads `auto_experiment/history.tsv` and writes `auto_experiment/trajectory.png`.
+   - Sanity-check the PNG: baseline marker visible on the left, mostly-monotonic climb, final candidate on the right. If the run never promoted (no improvement), the plot is a flat line — re-run with a longer N before the take.
+   - To preview the design with synthetic data: `HISTORY_TSV=/tmp/fake_history.tsv OUT_PNG=/tmp/preview.png uv run python scripts/plot_trajectory.py`.
 
 ---
 
@@ -64,106 +64,88 @@ The script splits cleanly into **two energies**:
 
 T+ times are final-cut timestamps.
 
-### Segment 1 — Opener (0:00 → 1:35) · animated explainer
+### Segment 1 — Opener (0:00 → 1:00) · animated explainer
 
-**Visual:** Tab 1, `assets/autoresearch-explainer.html`, fullscreen. Three slides, ten stages (0–9). Auto-stagnation fires on its own — don't race it.
+**Visual:** Tab 1, `assets/autoresearch-explainer.html`, fullscreen. Flow: Karpathy announcement tweet → loop animation → outage + problem cards → harness reveal. (Explainer is already reordered — stages 0–8.)
 
-| T+ | Action (key press) | What to say |
+**Cursor:** Park top-right corner before pressing F for fullscreen. Don't move during the explainer — ScreenKite leaves a static cursor alone. Cmd-Tab at 1:00 (keyboard only).
+
+| T+ | Stage | Beats to hit (improvise the line) |
 |---|---|---|
-| 0:00 | Stage 0 — title screen ("autoresearch"). Hold 6s. | *"Autoresearch is a simple idea. You give an agent a problem, a quantitative metric, and let it loop."* |
-| 0:06 | Press `Space` → stage 1. Loop arc draws in, three nodes fade in (LLM proposes → experiment → observe). | *"Propose. Run an experiment. Observe the result. Update memory. Repeat."* |
-| 0:14 | Press `Space` → stage 2. Dot starts moving. Metric card starts ticking through the sequence: 75 → 81 → 87 → **rejected at 78** (gate visibly holds) → 89 → 92 → 96. | *"Every trip around the loop is one experiment. Most improve the metric. Some don't — and when they don't, the gate catches it. Nothing ships that didn't earn the spot."* |
-| 0:32 | Press `Space` → stage 3. Right column reveals: lede ("An LLM proposes. An evaluation decides.") + tag ("Runs until told to stop.") + three stop conditions. | *"It runs unattended until something tells it to stop. A time budget, a target threshold, or no improvement for N iterations."* |
-| 0:46 | Stage 4 fires **automatically** as the sequence stalls — three rejections in a row, badge flips to "stagnation detected". Hold 4s on the final frame. | *"Today's animation stagnates after nine — three guesses, no improvement, the loop calls it. That's the whole concept."* |
-| 0:55 | Press `Space` → stage 5. Slide 2A — Karpathy's autoresearch announcement tweet fades in. | *"This is the lineage. Karpathy shipped one of these earlier this year — an LLM running on a Mac mini farm in his apartment, iterating against a metric until it found something better."* |
-| 1:10 | Press `Space` → stage 6. Slide 2B — outage tweet + three "missing for production" cards (Hardware-bound · Single-player · Stays local). | *"Beautiful demo. But hardware-bound, single-player, stays local — no shared surface for humans and agents to work on the same problem. When his auth dropped, the whole loop went with it."* |
-| 1:22 | Press `Space` → stage 7. Slide 3 — "The harness." Tagline: Cloud-native · CI/CD · Multi-player. | *"This project is the harness."* |
-| 1:25 | Press `Space` → stage 8. Tool grid fades in (Kubeflow · MLflow · DVC · ArgoCD · GitHub App · KFP). | *"Cluster-native pipelines, GitOps-controlled rollouts, every iteration tracked and reproducible."* |
-| 1:30 | Press `Space` → stage 9. Actors line ("humans and agents share the same MLOps surface"). | *"And it's multi-player from day one. A human data scientist and an agent push experiments to the same registry, the same queue, the same source of truth."* |
-| 1:35 | Cut to terminal tab. | *"Here's a run."* |
+| 0:00 | **Stage 0 — announcement tweet** (Andrej Karpathy + 82.8k stars marginalia). Hold ~15s. | • A little while ago Karpathy released autoresearch.  • Like everything he ships, it blew up — lots of stars, lots of forks.  • At its core it's just an infinitely running loop. |
+| 0:15 | `Space` → loop slide. Stages 1→2 auto-tick metric (75→96 with one rejection at iter 3). Stop conditions reveal at stage 3. **Stage 4 auto-fires** — three non-improvements, badge flips to "stagnation detected". | • Propose, run, observe, update memory — repeat.  • Some experiments win, some get rejected by the gate.  • Runs unattended until time, threshold, or stagnation calls it.  • [land the "beautiful concept" line as the badge flips] |
+| 0:42 | `Space` → outage tweet + 3 miss-cards. | • Beautiful concept — but nothing here is reproducible for you.  • Wrong hardware, single-player, stays local.  • Even Karpathy's setup blacked out when his auth dropped. |
+| 0:54 | `Space` → harness reveal (stages 6→8 advance through tool grid + actors line; press through quickly). | • This project's the harness that closes those gaps. Cluster-native, GitOps-controlled, multi-player from day one. |
+| 1:00 | Cmd-Tab to terminal (Pane B pre-typed). | • Here's a run. |
 
 **Recording notes:**
-- The explainer is now 10 stages, not 7. The first 4 are slide 1 (loop). Stage 4 is the auto-stagnation final state — **don't press through it; it fires on its own once the sequence finishes**. If you press past it, the badge logic still lands correctly, but you lose the "it stopped on its own" beat that mirrors the actual end-of-run.
-- Slides 2A and 2B depend on `widgets.js` from Twitter/X. **Don't record offline.** Pre-flight item 4 verifies this.
-- "Champion" is deliberately not spoken in the opener — slide 1 stays generic so the concept reads for any quantitative metric, not just ML. "Champion" / "AUC" / "model" come back in the technical walkthrough.
+- Don't read the beats verbatim — the column is a checklist, not a script. The improvised tone is the whole point of the cold open.
+- Stages 1–4 auto-advance internally. **Don't press Space again until stagnation lands** — if you race it you lose the "loop calls itself" beat that mirrors the actual end-of-run.
+- Tweet widgets need `widgets.js` from Twitter/X. Pre-flight §0 item 4 verifies. **Don't record offline.**
 
-### Segment 2 — Kick off the run (0:55 → 1:25)
+### Segment 2 — Kick off the run (1:00 → 1:15) · 15s
 
-**Visual:** Terminal with 3 panes (A: watch, B: make, C: logs). All pre-typed, nothing executed.
+**Visual:** Terminal with 3 pre-typed panes (A: watch, B: make, C: logs). Cursor parks bottom-right between clicks.
 
-| T+ | Action | What to say |
+| T+ | Action / cursor | Beats |
 |---|---|---|
-| 0:55 | Show the 3 pre-typed commands. | *"Three commands. First, watch the cluster — every pod that spins up, I see it. Second, kick off the loop — 20 iterations, 8-hour budget. Third, tail the driver logs."* |
-| 1:05 | Run pane A (watch). | *"Right now: 2 inference pods serving the baseline. AUC 0.749, a one-feature decision tree. Intentionally bad — I want Claude to have room to improve."* |
-| 1:12 | Run pane B (make autoresearch-run). | *"Job submitted. Runs in the cluster, not on my laptop."* |
-| 1:18 | Pane A: `autoresearch-real-<timestamp>` pod appears as Pending → ContainerCreating → Running. | *"There it is. The driver pod. While it warms up — about five seconds — we're on Kaggle's IEEE-CIS fraud detection. Five-hundred-and-ninety-thousand transactions, four-hundred-and-thirty-three features."* |
+| 1:00 | Cmd-Tab landed on terminal. Cursor on Pane B prompt. | • Three commands pre-typed: watch, kick off, tail. |
+| 1:04 | Click Pane A → Enter (`kubectl get pods -A -w`). Cursor returns. | • Live pod watcher. |
+| 1:08 | Click Pane B → Enter (`make autoresearch-run AUTORESEARCH_N=20`). | • Submitted. 20 iters, 8h budget. In-cluster, not my laptop. |
+| 1:13 | Pane A: `autoresearch-real-…` Pending → ContainerCreating. Cursor parks. | • Driver pod warming. Dataset is Kaggle IEEE-CIS — 590k transactions, 433 features. |
 
-### Segment 3 — KFP UI (1:25 → 2:30)
+### Segment 3 — KFP UI (1:15 → 1:45) · 30s
 
-**Visual:** Tab 2, KFP UI. The autoresearch-driven pipeline run will appear at the top of the runs list ~30s after job start.
+**Visual:** Tab 2, KFP UI. Switch when Pane A shows the first `preprocess-…` pod going Pending → Running.
 
-**When to switch tabs:** as soon as Pane A shows the first `preprocess-...` pod transition from Pending → Running. That means Claude has finished proposing and the KFP run is submitted.
-
-| T+ | Action | What to say |
+| T+ | Action / cursor | Beats |
 |---|---|---|
-| 1:25 | Tab to KFP UI. Click into the latest run. | *"Kubeflow Pipelines. Every iteration is its own KFP run, fully traceable."* |
-| 1:35 | Show the DAG: preprocess → train → evaluate. Point at each box. | *"Three-stage pipeline — preprocess, train, evaluate. Each one is its own pod. If train crashes, the run halts and the loop catches it as a failed experiment. No half-broken state."* |
-| 1:50 | Click into the `train` task → Input/Output tab. | *"Here are the params Claude proposed this iteration — the model class, the features added, the hyperparams. The atomic record of one experiment."* |
-| 2:05 | Click `train` → Logs tab. Show streaming Python output. | *"Real training, real data, in-cluster. You can read the loss go down in real time."* |
-| 2:18 | Throwaway line still on KFP. | *"By the way — we're CPU only. The model's small. But that's a one-line manifest change to request a GPU and point at a GPU node pool. The pipeline above doesn't change."* |
+| 1:15 | Cmd-2 (or click Tab 2). Mouse to latest run row → click. | • Every iter is its own KFP run. Fully traceable. |
+| 1:23 | DAG visible: preprocess → train → evaluate. Cursor traces each node. | • Three stages, each its own pod. Crash halts the run, the loop catches it as a failed experiment. No half-broken state. |
+| 1:33 | Click `train` task → Logs tab. Cursor parks. | • Real training, in-cluster. Loss streams live. |
+| 1:40 | Quick hover back on DAG. | • CPU here. GPU pool is a one-line manifest. Pipeline unchanged. |
 
-### Segment 4 — MLflow (2:30 → 3:30)
+### Segment 4 — MLflow (1:45 → 2:20) · 35s
 
-**Visual:** Tab 3, MLflow `auto-experiment` runs page → click latest run.
+**Visual:** Tab 3, MLflow `auto-experiment` runs. Switch when train pod has been Running >10s — params log immediately.
 
-**Trigger to switch:** the train pod has gone Running for >10s. `train.py` calls `mlflow.start_run()` and logs params immediately. So even during training, MLflow already has the run with params + streaming metrics.
-
-| T+ | Action | What to say |
+| T+ | Action / cursor | Beats |
 |---|---|---|
-| 2:30 | Tab to MLflow → click latest auto-experiment run. | *"While evaluate finishes up, MLflow already has the run. Every metric, every param, the git commit Claude is on, the dataset hash — all logged."* |
-| 2:42 | Scroll the Parameters panel. Point at the cost-tracking metrics. | *"Input tokens, output tokens, the dollar cost of the Anthropic call. The loop logs its own cost. So you can answer: did this experiment pay for itself."* |
-| 2:55 | Click `Compare` → select iter-0 baseline + current iter → click. | *"Two-click diff. Params side-by-side, metrics side-by-side. You see exactly what changed and what it did to AUC."* |
-| 3:10 | Tab 4 (MLflow Models page) → click `classifier`. | *"Every training run registers a new version. The `@champion` alias only moves if the new AUC beats the current champion. That's the promotion gate. No regression makes it past this."* |
-| 3:20 | The "why this matters" line. | *"An autoresearch loop without experiment tracking is just an LLM thrashing in the dark. This is the same MLflow a human data scientist uses — same UI, same primitives. We just have a non-human user. When the agent runs 20 unattended experiments, you need to know what was tried, what worked, and why. Tracking is non-negotiable."* |
+| 1:45 | Tab 3 → click latest run. Cursor scrolls Parameters panel. | • Run already has params, metrics, git commit, dataset hash. |
+| 1:55 | Cursor highlights cost-tracking row (input/output tokens, USD). | • Loop logs its own bill. You can answer "did this experiment pay for itself." |
+| 2:02 | Click Compare → pick iter 0 + this iter → click. | • Two-click diff. Side-by-side params + metrics. |
+| 2:10 | Tab 4 (Models page) → click `classifier`. Cursor on `@champion` row. | • Every train registers a version. `@champion` only moves when AUC beats the current. The gate. |
+| 2:18 | Anchor line. | • Tracking is non-negotiable for unattended runs. Same MLflow a human team uses — just with a non-human user. |
 
-### Segment 5 — GitHub PR + ArgoCD (3:30 → 4:15)
+### Segment 5 — GitHub PR + ArgoCD (2:20 → 2:45) · 25s
 
-**Visual:** Tab 5 (GitHub PRs) → click the new auto-PR. Then Tab 6 (ArgoCD).
-
-| T+ | Action | What to say |
+| T+ | Action / cursor | Beats |
 |---|---|---|
-| 3:30 | Tab to GitHub PR. Show PR body. | *"When an iteration beats the champion, the loop opens a pull request — signed by a GitHub App, not a human user. Proper service identity, fully traceable in the audit log."* |
-| 3:40 | Point at: cost summary block, the diff (usually `configs/params.yaml` or `src/train.py`), the green CI checks. | *"PR body has the cost summary. Diff is one file change. CI ran — lint, tests, Docker build, image push. PR auto-merged to main."* |
-| 3:55 | Tab to ArgoCD. | *"ArgoCD watches `k8s/` on main. The PR bumped the inference-api image tag. ArgoCD picks it up — OutOfSync, then Syncing, then Synced."* |
-| 4:05 | Point at the sync history / app health. | *"GitOps means the cluster is whatever git says it is. No `kubectl apply` from a laptop. No drift."* |
+| 2:20 | Tab 5. Click latest auto-PR. Cursor on PR title (`bump classifier v… → vN+1`). | • Iter beats champion → PR opens. Signed by a GitHub App, not a human user. Audit trail. |
+| 2:30 | Cursor pans to cost summary block, then green CI checks. | • PR body has cost summary. CI lint + test + Docker pass. Auto-merged. |
+| 2:38 | Tab 6 → ArgoCD app. Cursor on Sync status. | • Cluster sees the merge: OutOfSync → Syncing → Synced. GitOps. No `kubectl apply`. |
 
-### Segment 6 — The closed loop (4:15 → 4:45)
+### Segment 6 — The closed loop (2:45 → 3:00) · 15s
 
-**Visual:** Terminal full-screen, big font.
+**Visual:** Terminal full-screen, big font. Cursor blinking at prompt.
 
-| T+ | Action | What to say |
+| T+ | Action / cursor | Beats |
 |---|---|---|
-| 4:15 | Type or recall: `curl -X POST http://34.47.242.89/predict -H 'content-type: application/json' -d '{"data": {"TransactionAmt": 100.0, "ProductCD": "W"}}'` | *"And the inference endpoint is serving the new champion."* |
-| 4:22 | Run it. Response renders with `"model_version": "<N+1>"`. | *"`model_version` field tells you which one. The loop is closed — Claude proposed, the cluster trained and evaluated, the registry promoted, GitOps deployed, real traffic hits the new model. No human touched a keyboard."* |
+| 2:45 | Recall `curl http://34.47.242.89/predict …`. Cursor at end of line. | • Hit the live endpoint. |
+| 2:52 | Enter. Response renders. Cursor highlights `"model_version": "N+1"`. | • New version serving. Loop's closed — propose, train, gate, deploy. No human touched a keyboard. |
 
-### Segment 7 — The trajectory + close (4:30 → 5:00) · ~30s
+### Segment 7 — The trajectory + close (3:00 → 3:30) · 30s
 
-**Visual:** Tab 7. `auto_experiment/trajectory.png` opened fullscreen (Preview.app → ⌘+F, or browser fullscreen).
+**Visual:** Tab 7. `auto_experiment/trajectory.png` fullscreen (Preview.app ⌘+F, or browser fullscreen). Generate via `make plot-trajectory` after the run finishes.
 
-A single static plot does this better than scrolling the MLflow runs list — the viewer reads the whole story in one frame instead of tracking rows past the camera.
+A single static plot beats scrolling the MLflow runs list — the whole story reads in one frame.
 
-| T+ | Action | What to say |
+| T+ | Action / cursor | Beats |
 |---|---|---|
-| 4:30 | Open `trajectory.png` fullscreen. Hold. | *"Here's the trajectory of the run we just kicked off. Iteration zero on the left — the bad baseline. Every dot is one experiment. The solid line is the promoted champion — only moves when a candidate beats the current best."* |
-| 4:45 | Cursor traces the stagnation tail (last 3 dots flat). | *"Loop ran until it stopped seeing improvement, then called it. Nine experiments, signed off by the gate, not by me."* |
-| 4:55 | Hold 5s on the final frame. Deadpan close. | *"That's autoresearch."* |
-| 5:00 | Stop recording. | — |
-
-**Plot generation** (run after the autoresearch job completes, before recording the close):
-```
-make plot-trajectory   # TODO: add target — reads auto_experiment/history.tsv, writes auto_experiment/trajectory.png
-```
-The plot needs: x-axis = iteration number, y-axis = metric (label it `AUC-ROC`), baseline marker at iter 0, scatter of all candidates, line connecting the running champion, and a small annotation at the right where the loop stopped ("stagnation: 3 consecutive non-improvements").
+| 3:00 | Open `trajectory.png` fullscreen. Cursor parked. | • The trajectory of the run. Iter 0 on the left — bad baseline. Cyan step line: promoted champion. Only moves when a candidate wins. |
+| 3:15 | Cursor traces the flat stagnation tail. | • Loop ran until it stopped seeing improvement. Signed off by the gate, not by me. |
+| 3:25 | Hold 5s. Deadpan. | • That's autoresearch. |
+| 3:30 | Stop recording. | — |
 
 ---
 
@@ -173,10 +155,10 @@ The visual motif: one version number, threaded across **4 surfaces** during the 
 
 | Surface | What you see | Beat |
 |---|---|---|
-| MLflow Models page | `@champion → v<N+1>` | Segment 4 |
-| GitHub PR title/body | `bump classifier v<N> → v<N+1>` | Segment 5 |
-| ArgoCD sync log | image tag change visible | Segment 5 |
-| `curl /predict` response | `"model_version": "<N+1>"` | Segment 6 |
+| MLflow Models page | `@champion → v<N+1>` | Segment 4 (T+2:10) |
+| GitHub PR title/body | `bump classifier v<N> → v<N+1>` | Segment 5 (T+2:20) |
+| ArgoCD sync log | image tag change visible | Segment 5 (T+2:38) |
+| `curl /predict` response | `"model_version": "<N+1>"` | Segment 6 (T+2:52) |
 
 ---
 
@@ -200,26 +182,26 @@ The visual motif: one version number, threaded across **4 surfaces** during the 
 1. **Trim head + tail.** Cut everything before the first frame of the explainer's title screen. Cut everything after "That's autoresearch."
 2. **Strip scratch audio.** Re-record clean voiceover against the picture cut. Studio mic, quiet room, one or two takes per sentence.
 3. **Speed-ramp profile:**
-   - Opener (0:00 → 0:55): 1×, no ramp. This is the hook.
-   - Terminal warmup (0:55 → 1:25): 1×.
+   - Opener (0:00 → 1:00): 1×, no ramp. This is the hook.
+   - Terminal warmup (1:00 → 1:15): 1×.
    - KFP wait stretches (between train pod start and DAG completion): **5-8× ramp** through pure waiting; drop to 1× for "row appears", "DAG completes".
    - MLflow + ArgoCD beats: 1×, no ramp — these are the payoff, viewer needs to read.
-   - Prove + trajectory close: 1×.
+   - `/predict` proof + trajectory close: 1×.
 4. **Overlays:**
    - Cyan box around the version number on each of the 4 surfaces.
    - Small "Iter N" text top-left during the iter-by-iter visualization.
 5. **Captions:** auto-generate, then proofread — auto-captions mangle "MLflow", "ArgoCD", "Kubeflow", "@champion", "GitOps".
 6. **Music:** sparse ambient pad at -22dB, ducked under voice. Or silence — silence works fine for a technical demo.
 7. **Exports:**
-   - YouTube / portfolio: 5:15 cut, 1920×1080 mp4.
-   - LinkedIn 60-90s: opener (20s, animated explainer) + terminal kickoff (10s) + MLflow + ArgoCD payoff beats (30s) + `/predict` thread (10s). 1920×1080 mp4.
-   - README GIF: 15s teaser of just the explainer's animated loop with the AUC counter ticking. 800px wide, ≤8MB.
+   - YouTube / portfolio: 3:30 cut, 1920×1080 mp4.
+   - LinkedIn 60-90s: opener (40s, animated explainer) + MLflow + ArgoCD payoff beats (20s) + `/predict` thread + trajectory close (15s). 1920×1080 mp4.
+   - README GIF: 15s teaser of just the explainer's animated loop with the metric ticking. 800px wide, ≤8MB.
 
 ---
 
 ## 5. If something goes wrong mid-take
 
-- **Iter 1 reverts (AUC under champion):** narrate it once ("the gate held — live model wasn't touched"), stop recording, re-run. A revert is great content if you have a 10-iter cut, but the 5-min demo needs a successful promotion to land the proof beat. Re-shoot.
+- **Iter 1 reverts (AUC under champion):** narrate it once ("the gate held — live model wasn't touched"), stop recording, re-run. A revert is great content if you have a 10-iter cut, but the 3:30 demo needs a successful promotion to land the proof beat. Re-shoot.
 - **KFP run fails:** narrate it ("loop tolerated the failure — live model unaffected"), stop, re-run.
 - **ArgoCD doesn't sync within 60s:** click the `Refresh` button on the App page. If still stuck, stop and check `kubectl -n argocd logs deploy/argocd-application-controller`.
 - **`/predict` returns 422 or 503:** stop. Check `/health` first. The deployment may be still rolling. Better to skip the proof beat than show an error.

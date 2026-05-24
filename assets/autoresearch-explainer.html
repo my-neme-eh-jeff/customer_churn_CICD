@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #0a0a0f;
@@ -30,9 +30,8 @@
     letter-spacing: 0.4em; font-size: 11px; color: var(--muted); text-transform: uppercase;
     opacity: 1; transition: opacity 0.6s ease;
   }
-  .stage-0 .top-title { opacity: 0.4; }
-  /* hide the top title on slides 2A, 2B, 3 — only slide 1 needs the chrome */
-  .stage-on-5 .top-title, .stage-on-6 .top-title, .stage-on-7 .top-title, .stage-on-8 .top-title, .stage-on-9 .top-title {
+  /* hide the top title on the tweet + harness slides — only the loop slide (stages 1-4) needs the chrome */
+  .stage-on-0 .top-title, .stage-on-5 .top-title, .stage-on-6 .top-title, .stage-on-7 .top-title, .stage-on-8 .top-title {
     opacity: 0;
   }
 
@@ -46,7 +45,7 @@
     transition: opacity 0.6s ease;
   }
   /* slide 1 fades out at stage 5+ */
-  .stage-on-5 .container, .stage-on-6 .container, .stage-on-7 .container, .stage-on-8 .container, .stage-on-9 .container {
+  .stage-on-0 .container, .stage-on-5 .container, .stage-on-6 .container, .stage-on-7 .container, .stage-on-8 .container {
     opacity: 0;
     pointer-events: none;
   }
@@ -70,17 +69,17 @@
     transition: opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s;
   }
 
-  /* === SLIDE 2A — Karpathy intro (stage 5 only) — shows the announcement tweet === */
+  /* === SLIDE 2A — Karpathy intro (stage 0, cold open) — shows the announcement tweet === */
   .slide-2-intro { /* inherits .slide-overlay */ }
-  .stage-on-5 .slide-2-intro { opacity: 1; pointer-events: auto; }
-  .stage-on-5 .slide-2-intro .s2-header, .stage-on-5 .slide-2-intro .s2-tag {
+  .stage-on-0 .slide-2-intro { opacity: 1; pointer-events: auto; }
+  .stage-on-0 .slide-2-intro .s2-header, .stage-on-0 .slide-2-intro .s2-tag {
     opacity: 1; transform: translateY(0);
   }
 
-  /* === SLIDE 2B — the problem (stage 6 only) — shows the outage tweet === */
+  /* === SLIDE 2B — the problem (stage 5) — shows the outage tweet === */
   .slide-2-problem { /* inherits .slide-overlay */ }
-  .stage-on-6 .slide-2-problem { opacity: 1; pointer-events: auto; }
-  .stage-on-6 .slide-2-problem .s2-header, .stage-on-6 .slide-2-problem .s2-tag {
+  .stage-on-5 .slide-2-problem { opacity: 1; pointer-events: auto; }
+  .stage-on-5 .slide-2-problem .s2-header, .stage-on-5 .slide-2-problem .s2-tag {
     opacity: 1; transform: translateY(0);
   }
 
@@ -95,9 +94,9 @@
     opacity: 0; transform: translateY(8px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
-  .stage-on-6 .miss-card:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.15s; }
-  .stage-on-6 .miss-card:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.30s; }
-  .stage-on-6 .miss-card:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.45s; }
+  .stage-on-5 .miss-card:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.15s; }
+  .stage-on-5 .miss-card:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.30s; }
+  .stage-on-5 .miss-card:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.45s; }
 
   .miss-card .pc-icon {
     color: var(--bad); display: flex; align-items: center; justify-content: center;
@@ -109,40 +108,84 @@
   .miss-card .pc-name { font-size: 16px; font-weight: 700; color: #f4f4f5; }
   .miss-card .pc-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
 
-  /* Karpathy tweet reference — Twitter/X embed below the 3 problem cards */
+  /* Karpathy tweet reference — Twitter/X embed below the 3 problem cards.
+     gap=8px so the caption hugs the tweet; margin-top=36px so the cards
+     still breathe above the tweet (more separation up, less separation down). */
   .video-ref {
-    margin-top: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px;
+    margin-top: 36px; display: flex; flex-direction: column; align-items: center; gap: 8px;
     width: 100%;
     opacity: 0; transform: translateY(8px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
-  .stage-on-5 .video-ref, .stage-on-6 .video-ref { opacity: 1; transform: translateY(0); transition-delay: 0.6s; }
+  .stage-on-0 .video-ref, .stage-on-5 .video-ref { opacity: 1; transform: translateY(0); transition-delay: 0.6s; }
   .video-ref .caption {
     font-size: 15px; color: var(--muted); font-weight: 400; font-style: italic;
   }
-  /* Tweet wrapper — width-constrained, auto-height. The slide-overlay above
-     does justify-content: center, so the whole content block re-centers
-     vertically as the tweet height changes between slides. min-height
-     reserves space during widgets.js load so the page doesn't jump-shift
-     before the tweet renders. */
+  /* Tweet wrapper — width-constrained, auto-height. No min-height: the
+     wrapper hugs the tweet so the caption sits tight beneath it. Small
+     first-paint shift during widgets.js load is acceptable. */
   .tweet-wrapper {
     width: 100%; max-width: 560px;
-    min-height: 320px;
     display: flex; justify-content: center;
   }
   .tweet-wrapper .twitter-tweet { margin: 0 !important; max-width: 100% !important; }
-  /* Tighter top/bottom padding on the two tweet slides so the announcement
-     tweet (with chart image) fits on a 1080p viewport without clipping. */
+  /* Tighter padding on the two tweet slides so both tweets fit a 1080p viewport. */
   .slide-2-intro, .slide-2-problem { padding: 32px 4vw; }
   .slide-2-intro .s2-tag, .slide-2-problem .s2-tag { margin-bottom: 20px; }
+  /* Slide 2A's announcement tweet embeds a chart image — uncropped it's ~1100px
+     tall and overflows the viewport. zoom shrinks both the rendered tweet AND
+     its layout box, so the slide re-centers properly (unlike transform:scale).
+     Explicit width is required because `.tweet-annotated` is inline-block —
+     `width: 100%` inside an inline-block parent collapses to min-content. */
+  .slide-2-intro .video-ref { margin-top: 0; }
+  .slide-2-intro .tweet-wrapper { zoom: 0.82; width: 560px; }
+  /* The intro slide has no cards above the tweet, so trim header/tag chrome
+     to give the (still-large) tweet more room. */
+  .slide-2-intro .s2-header { font-size: 30px; margin-bottom: 6px; }
+  .slide-2-intro .s2-tag { font-size: 14px; margin-bottom: 24px; }
+
+  /* Marginalia around the announcement tweet — casual handwritten
+     annotations to make the slide feel less formal and use the empty
+     left/right space. They sit OUTSIDE the zoomed tweet-wrapper so
+     they render at full resolution. */
+  /* inline-block sizes to the zoomed tweet-wrapper's actual visual width
+     so annotations anchor against the tweet's visible edges. */
+  .tweet-annotated { position: relative; display: inline-block; }
+  .annotate {
+    position: absolute; pointer-events: auto;
+    font-family: 'Caveat', cursive;
+    color: var(--muted);
+    white-space: nowrap;
+    user-select: none;
+  }
+  .annotate-left {
+    right: 100%; top: 32%;
+    margin-right: 28px;
+    transform: rotate(-7deg);
+    color: #d4d4d8;                                  /* slightly brighter for the icon */
+    text-decoration: none;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .annotate-left svg { width: 32px; height: 32px; display: block; }
+  .annotate-left .gh-label { font-size: 15px; line-height: 1; color: var(--muted); }
+  .annotate-right {
+    left: 100%; top: 36%;
+    margin-left: 28px;
+    transform: rotate(5deg);
+    display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+  }
+  .annotate-right .annotate-star {
+    font-size: 28px; font-weight: 700; line-height: 1; color: var(--accent-2);
+  }
+  .annotate-right .annotate-note { font-size: 15px; line-height: 1.15; color: var(--muted); }
 
   /* === SLIDE 3 — the harness (stages 7-9) === */
   .slide-2 { /* keep selector for now (HTML stays as is) — inherits .slide-overlay */ }
-  .stage-on-7 .slide-2, .stage-on-8 .slide-2, .stage-on-9 .slide-2 {
+  .stage-on-6 .slide-2, .stage-on-7 .slide-2, .stage-on-8 .slide-2 {
     opacity: 1; pointer-events: auto;
   }
-  .stage-on-7 .slide-2 .s2-header, .stage-on-8 .slide-2 .s2-header, .stage-on-9 .slide-2 .s2-header,
-  .stage-on-7 .slide-2 .s2-tag,    .stage-on-8 .slide-2 .s2-tag,    .stage-on-9 .slide-2 .s2-tag {
+  .stage-on-6 .slide-2 .s2-header, .stage-on-7 .slide-2 .s2-header, .stage-on-8 .slide-2 .s2-header,
+  .stage-on-6 .slide-2 .s2-tag,    .stage-on-7 .slide-2 .s2-tag,    .stage-on-8 .slide-2 .s2-tag {
     opacity: 1; transform: translateY(0);
   }
 
@@ -154,7 +197,7 @@
     opacity: 0; transform: translateY(8px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
-  .stage-on-8 .actors-line, .stage-on-9 .actors-line { opacity: 1; transform: translateY(0); }
+  .stage-on-7 .actors-line, .stage-on-8 .actors-line { opacity: 1; transform: translateY(0); }
   .actors-label {
     font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
     color: var(--muted); font-weight: 700; margin-right: 6px;
@@ -175,11 +218,11 @@
     opacity: 0; transform: translateY(8px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
-  .stage-on-7 .tool-card, .stage-on-8 .tool-card, .stage-on-9 .tool-card { opacity: 1; transform: translateY(0); }
-  .stage-on-7 .tool-card:nth-child(1), .stage-on-8 .tool-card:nth-child(1), .stage-on-9 .tool-card:nth-child(1) { transition-delay: 0.05s; }
-  .stage-on-7 .tool-card:nth-child(2), .stage-on-8 .tool-card:nth-child(2), .stage-on-9 .tool-card:nth-child(2) { transition-delay: 0.15s; }
-  .stage-on-7 .tool-card:nth-child(3), .stage-on-8 .tool-card:nth-child(3), .stage-on-9 .tool-card:nth-child(3) { transition-delay: 0.25s; }
-  .stage-on-7 .tool-card:nth-child(4), .stage-on-8 .tool-card:nth-child(4), .stage-on-9 .tool-card:nth-child(4) { transition-delay: 0.35s; }
+  .stage-on-6 .tool-card, .stage-on-7 .tool-card, .stage-on-8 .tool-card { opacity: 1; transform: translateY(0); }
+  .stage-on-6 .tool-card:nth-child(1), .stage-on-7 .tool-card:nth-child(1), .stage-on-8 .tool-card:nth-child(1) { transition-delay: 0.05s; }
+  .stage-on-6 .tool-card:nth-child(2), .stage-on-7 .tool-card:nth-child(2), .stage-on-8 .tool-card:nth-child(2) { transition-delay: 0.15s; }
+  .stage-on-6 .tool-card:nth-child(3), .stage-on-7 .tool-card:nth-child(3), .stage-on-8 .tool-card:nth-child(3) { transition-delay: 0.25s; }
+  .stage-on-6 .tool-card:nth-child(4), .stage-on-7 .tool-card:nth-child(4), .stage-on-8 .tool-card:nth-child(4) { transition-delay: 0.35s; }
 
   .tool-card .tool-icon { color: var(--accent); display: flex; align-items: center; }
   .tool-card .tool-icon svg { width: 22px; height: 22px; display: block; }
@@ -197,7 +240,7 @@
     opacity: 0; transform: translateY(8px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
-  .stage-on-9 .extended-loop { opacity: 1; transform: translateY(0); }
+  .stage-on-8 .extended-loop { opacity: 1; transform: translateY(0); }
   .extended-loop .ext-label {
     font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
     color: var(--muted); font-weight: 700; margin-bottom: 16px;
@@ -536,10 +579,20 @@
     <p class="s2-tag">A research loop, packaged up by Karpathy. The starting point.</p>
 
     <div class="video-ref">
-      <div class="tweet-wrapper">
-        <blockquote class="twitter-tweet" data-theme="dark" data-conversation="none" data-dnt="true">
-          <a href="https://twitter.com/karpathy/status/2030371219518931079">Karpathy on autoresearch (Mar 7, 2026)</a>
-        </blockquote>
+      <div class="tweet-annotated">
+        <a class="annotate annotate-left" href="https://github.com/karpathy/autoresearch" target="_blank" rel="noopener noreferrer" aria-label="GitHub: karpathy/autoresearch">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.4 3-.405 1.02.005 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          <span class="gh-label">karpathy/autoresearch</span>
+        </a>
+        <div class="annotate annotate-right">
+          <span class="annotate-star">★ 82.8k</span>
+          <span class="annotate-note">stars and counting!</span>
+        </div>
+        <div class="tweet-wrapper">
+          <blockquote class="twitter-tweet" data-theme="dark" data-conversation="none" data-dnt="true">
+            <a href="https://twitter.com/karpathy/status/2030371219518931079">Karpathy on autoresearch (Mar 7, 2026)</a>
+          </blockquote>
+        </div>
       </div>
     </div>
   </div>
@@ -695,24 +748,23 @@
   // (could be conversion, latency-rank, accuracy, anything you can phrase
   // as a metric). Decimals like 0.812 read as ML/AUC; that's premature
   // for slide 1 where we haven't introduced the actual problem yet.
-  // 9-iter narrative:
-  //   1-6: improvements (one rejected attempt at iter 3 for the gate demo)
-  //   7-9: three consecutive failed attempts — only NOW the system has basis
-  //        to declare 'no improvement for N iters' and stagnate. Stagnation
-  //        is detected AFTER iter 9 plays out, not on the first failure.
+  // 8-iter narrative — kept short so the slide doesn't outstay its welcome:
+  //   1-4: improvements (climbs to the plateau)
+  //   5:   mid-run rejection (gate demo)
+  //   6:   one more improvement → 92% peak
+  //   7-8: two consecutive non-improvements → STAGNATION after iter 8
   const SEQUENCE = [
-    { type: 'success', value: 81 },     // 1
-    { type: 'success', value: 87 },     // 2
-    { type: 'fail',    value: 78 },     // 3 — mid-run rejection (gate demo)
-    { type: 'success', value: 89 },     // 4
-    { type: 'success', value: 92 },     // 5
-    { type: 'success', value: 96 },     // 6 — best metric hit
-    { type: 'fail',    value: 89 },     // 7 — no improvement #1
-    { type: 'fail',    value: 93 },     // 8 — no improvement #2
-    { type: 'fail',    value: 95 },     // 9 — no improvement #3 → STAGNATION
+    { type: 'success', value: 80 },     // 1
+    { type: 'success', value: 85 },     // 2
+    { type: 'success', value: 88 },     // 3
+    { type: 'success', value: 91 },     // 4 — strong run
+    { type: 'fail',    value: 86 },     // 5 — mid-run rejection (gate demo)
+    { type: 'success', value: 92 },     // 6 — best metric hit (plateau)
+    { type: 'fail',    value: 88 },     // 7 — no improvement #1
+    { type: 'fail',    value: 90 },     // 8 — no improvement #2 → STAGNATION
   ];
   const BASELINE = 75;
-  const TICK_MS = 3500;
+  const TICK_MS = 2800;                 // ~20% faster than the original 3500ms
   const FAIL_REVERT_MS = 1500;
   const fmt = (v) => v + '%';            // single source of truth for display
 
@@ -728,12 +780,11 @@
   let champion = BASELINE;
   let dotTimer = null;
   let pendingRevert = null;
-  const MAX_STAGE = 9;   // 0-4 loop · 5 karpathy intro · 6 problem · 7-9 harness
+  const MAX_STAGE = 8;   // 0 karpathy intro · 1-4 loop · 5 problem · 6-8 harness
 
   function setStage(s) {
     body.className = '';
-    if (s === 0) { body.classList.add('stage-0'); }
-    else { body.classList.add('stage-on-' + s); }
+    body.classList.add('stage-on-' + s);
     stage = s;
 
     if (s >= 2 && !dotTimer) {
@@ -759,7 +810,7 @@
       void aucVal.offsetWidth;
       aucVal.textContent = fmt(champion);
       iterVal.textContent = 'iteration ' + stepIdx + ' · stagnation detected';
-      setBadge('rejected', 'stagnant');
+      setBadge('improved', 'best');
       dot.classList.remove('fail');
     }
   }
@@ -799,8 +850,8 @@
       setBadge('rejected', 'rejected');
       dot.classList.add('fail');
       pendingRevert = setTimeout(() => {
-        // If this is the LAST iter in the sequence, the system now has 3
-        // consecutive non-improvements (iters 7, 8, 9) and stagnation can
+        // If this is the LAST iter in the sequence, the system now has 2
+        // consecutive non-improvements (iters 7, 8) and stagnation can
         // be declared. Transition directly to stagnation state instead of
         // showing the normal 'held at X' revert message.
         if (stepIdx >= SEQUENCE.length && stage < 4) {
@@ -829,11 +880,16 @@
     void aucVal.offsetWidth;
     aucVal.textContent = fmt(BASELINE);
     aucVal.classList.add('reset-flash');
-    iterVal.textContent = 'iteration 0 · baseline · reset';
+    iterVal.textContent = 'iteration 0';
     setBadge('baseline', 'baseline');
     dot.classList.remove('fail');
     setStage(0);
   }
+
+  // Initialize stage 0 explicitly — the page no longer relies on
+  // default-visible content; stage 0 is the Karpathy announcement tweet
+  // and needs `body.stage-on-0` set before anything renders.
+  setStage(0);
 
   document.addEventListener('keydown', (e) => {
     if (e.code === 'Space' || e.code === 'ArrowRight') {
