@@ -21,8 +21,8 @@ spec:
       # MLflow at startup, so users see the latest model within the rollout
       # window without any image rebuild.
       annotations:
-        mlops/classifier-version: "2"
-        mlops/classifier-run-id: "37d9c3d77dc84d19bc20651b2439d465"
+        mlops/classifier-version: "7"
+        mlops/classifier-run-id: "046c2ed49b8e4af58720c953ebdd725b"
     spec:
       serviceAccountName: inference-api-sa
       # Pod Security `restricted` baseline. uid 10001 matches the `app` user

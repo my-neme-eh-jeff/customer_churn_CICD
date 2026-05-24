@@ -1,2 +1,7 @@
 timestamp	exp_num	experiment_name	change_type	auc_before	auc_after	delta	outcome	input_tokens	output_tokens	cost_usd	rationale
 2026-05-24T17:16	1	hgbt_expanded_features	params_only	0.0000	0.9253	+0.9253	improved	4953	877	0.0280	The current model uses only 2 features (TransactionAmt + ProductCD) with a DecisionTreeClassifier, which severely limits
+2026-05-24T17:21	2	hgbt_tune_lr_iters_early_stop	params_only	0.9253	0.9232	-0.0021	reverted	5351	874	0.0292	Increasing n_estimators to 500 and enabling early_stopping with a validation fraction should allow the HistGradientBoost
+2026-05-24T17:26	3	hgbt_more_iters_deeper_reg	params_only	0.9253	0.9261	+0.0008	reverted	5442	869	0.0294	The current model uses learning_rate=0.05 with 300 estimators and max_depth=6. Increasing n_estimators to 500 while keep
+2026-05-24T17:29	4	hgbt_shallow_more_iters_early_stop	params_only	0.9253	0.9221	-0.0032	reverted	5539	934	0.0306	The current model uses max_depth=6 with 300 iterations and learning_rate=0.05. Reducing max_depth to 4 (shallower trees,
+2026-05-24T17:36	5	add_v_columns_feature_expansion	params_only	0.9253	0.9266	+0.0013	reverted	5640	2607	0.0560	The current model only uses 38 numeric + 14 categorical features. The IEEE-CIS dataset contains many V-columns (V1-V339)
+2026-05-24T17:40	6	selective_v_cols_early_stopping	params_only	0.9253	0.9317	+0.0064	improved	5732	1303	0.0367	Experiment #5 added V-columns but got +0.0013 (below threshold). The key insight is to be more selective — adding only t
