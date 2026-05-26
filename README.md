@@ -28,11 +28,9 @@ A system that improves an ML model on its own.
 
 ## 🎬 Demo video
 
-<video src="https://github.com/my-neme-eh-jeff/ML-deployment-system-for-autoresearch/releases/download/v0.1-demo/Agentic.ML.Iterations.with.CI.CD.mp4" controls width="720" poster="https://img.youtube.com/vi/O0uPoLO-2JM/maxresdefault.jpg"></video>
+[![3:30 demo — ml-deployment-system-for-autoresearch](https://img.youtube.com/vi/O0uPoLO-2JM/maxresdefault.jpg)](https://youtu.be/O0uPoLO-2JM)
 
-3:30 walkthrough: submit a run → KFP trains on GKE → MLflow logs and registers `v_N` → signed PR via GitHub App → ArgoCD reconciles → `curl /predict` returns the new model version. Closes with the AUC trajectory across the overnight loop: baseline **0.749 → champion 0.9344** across 12 evaluated candidates.
-
-> Player not loading? [Watch on YouTube](https://youtu.be/O0uPoLO-2JM).
+▶ **[Watch the 3:30 demo on YouTube](https://youtu.be/O0uPoLO-2JM)** — submit a run → KFP trains on GKE → MLflow logs and registers `v_N` → signed PR via GitHub App → ArgoCD reconciles → `curl /predict` returns the new model version. Closes with the AUC trajectory across the overnight loop: baseline **0.749 → champion 0.9344** across 12 evaluated candidates.
 
 ---
 
