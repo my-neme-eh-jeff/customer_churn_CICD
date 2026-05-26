@@ -28,11 +28,9 @@ A system that improves an ML model on its own.
 
 ## 🎬 Demo video
 
-<img width="1484" height="1399" alt="Screenshot 2026-05-16 at 3 56 19 PM" src="https://github.com/user-attachments/assets/802f1326-51ec-4783-958e-e31d1a6ef584" />
+[![3:30 demo — ml-deployment-system-for-autoresearch](https://img.youtube.com/vi/O0uPoLO-2JM/maxresdefault.jpg)](https://youtu.be/O0uPoLO-2JM)
 
-<img width="1484" height="1399" alt="Screenshot 2026-05-16 at 3 57 53 PM" src="https://github.com/user-attachments/assets/c5769eb6-fa4f-4a04-9cbc-deb3c1f6a4bc" />
-
-<img width="1484" height="1399" alt="Screenshot 2026-05-16 at 3 58 21 PM" src="https://github.com/user-attachments/assets/1ecdbc6a-419b-4bca-b814-5bf1c7c155eb" />
+▶ **[Watch the 3:30 demo on YouTube](https://youtu.be/O0uPoLO-2JM)** — submit a run → KFP trains on GKE → MLflow logs and registers `v_N` → signed PR via GitHub App → ArgoCD reconciles → `curl /predict` returns the new model version. Closes with the AUC trajectory across the overnight loop: baseline **0.749 → champion 0.9344** across 12 evaluated candidates.
 
 ---
 
