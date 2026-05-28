@@ -204,6 +204,36 @@ First-time setup is a single interactive wizard — pick cloud, paste in creds, 
 make setup                                     # interactive: cloud + tracker + creds → .env
 ```
 
+`make setup` is the fresh-clone entrypoint. It checks for `gcloud`, `kubectl`,
+and `uv`, then walks you through the values the rest of the system needs:
+
+- cloud + tracker choice (`gke` + `mlflow` are the wired-up path today)
+- GCP project + region
+- Anthropic API key
+- optional GitHub App config, required for signed autoresearch PRs
+
+The wizard writes two local config files:
+
+| File | Purpose |
+|---|---|
+| `.env` | Runtime secrets and IDs read by the autoresearch loop, Job manifest, and API |
+| `configs/tenant.yaml` | Non-secret cloud/tracker selection for the local setup |
+
+It does **not** provision cloud resources by itself. After writing config, it
+prints the exact next commands: authenticate `gcloud`, run
+`scripts/setup-gcp.sh`, deploy MLflow/ArgoCD, push the Anthropic secret into
+the cluster, wake the cluster, reset to a clean baseline, and start the loop.
+
+For CI or scripted setup, the same wizard can run non-interactively:
+
+```bash
+SETUP_NONINTERACTIVE=1 \
+GCP_PROJECT=your-gcp-project \
+GCP_REGION=asia-south1 \
+ANTHROPIC_API_KEY=sk-ant-... \
+make setup
+```
+
 Then the four-command demo flow:
 
 ```bash
